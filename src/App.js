@@ -1,24 +1,18 @@
 import logo from './logo.svg';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import store from './store';
+import Routers from './router';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      {/* 这里可以嵌套其他provider例如权限组件Permission,如果使用use-query也嵌套在此 */}
+      <BrowserRouter>
+        <Routers />
+      </BrowserRouter>
+    </Provider>
   );
 }
 
