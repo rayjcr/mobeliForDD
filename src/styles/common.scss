@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    box-sizing: border-box;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    background: #f0f0f0;
+    font-size: .24rem;
+    // background-color: #F00;
+}
+#root {
+    width: 100%;
+    height: 100%;
+}
+.Component_Page {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: auto;
+    background: #FFF;
+}
+.dropdownBox{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1rem;
+    padding: .2rem;
+    background: #FFF;
+    .dropdownDiv{
+        width: 100%;
+        height: 100%;
+        border: 1px solid #48807A;
+        border-radius: .1rem;
+    }
+}
+
+
+
+

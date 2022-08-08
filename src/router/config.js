@@ -3,6 +3,8 @@ import PageB from '../views/pageB';
 import SchoolReport from '../views/schoolRport';
 import Honor from '../views/honor';
 import Prove from '../views/prove';
+import Transcript from '../views/transcript';
+
 import { Navigate } from 'react-router-dom';
 
 const Menu = [
@@ -20,6 +22,11 @@ const Menu = [
         path: '/b',
         title: 'login',
         element: <PageB />,
+        isMenu: false,
+    },{
+        path: '/transcript',
+        title: 'login',
+        element: <Transcript />,
         isMenu: false,
     },
     {

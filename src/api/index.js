@@ -9,3 +9,17 @@ export async function login(data) {
         data,
     })
 }
+
+export async function getUserInfo() {
+    return {
+        userName: 'DuLaLa',
+        role: 'admin'
+    }
+}
+
+// export async function getPermissionList(data) {
+//     return request(`${root}/${base}/login`,{
+//         method: 'post',
+//         data,
+//     })
+// }
