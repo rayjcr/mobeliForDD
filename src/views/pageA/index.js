@@ -15,4 +15,4 @@ const mapStateToProps = (state) => {
 }
 
 // 关联redux的store并利用 HOC 来判断用户是否具有权限。
-export default connect(mapStateToProps)(PermissionHoc(['admin'])(PageA))
+export default connect(mapStateToProps)(PermissionHoc(['admin,teacher'])(PageA))

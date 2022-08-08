@@ -8,12 +8,25 @@ html, body {
     width: 100%;
     height: 100%;
     background: #f0f0f0;
+    color: #444;
     font-size: .24rem;
     // background-color: #F00;
 }
 #root {
     width: 100%;
     height: 100%;
+}
+.mask {
+    width:100%; 
+    height:100%;
+    top:0;
+    left:0;
+    position:fixed;
+    z-index:500;
+    background:#000;
+    filter:alpha(opacity=70);
+    -moz-opacity:0.7;
+    opacity: 0.7;
 }
 .Component_Page {
     width: 100%;
@@ -24,6 +37,7 @@ html, body {
 }
 .dropdownBox{
     position: fixed;
+    z-index: 20;
     top: 0;
     left: 0;
     width: 100%;
@@ -35,6 +49,31 @@ html, body {
         height: 100%;
         border: 1px solid #48807A;
         border-radius: .1rem;
+        padding: 0 .2rem;
+        font-size: .3rem;
+        line-height: .58rem;
+    }
+    .dropListBox{
+        position: fixed;
+        padding: .2rem 0 ;
+        bottom: 0;
+        left: 0;
+        border-radius: .2rem .2rem 0 0;
+        z-index: 550;
+        width: 100%;
+        max-height: 40%;
+        overflow: auto;
+        background: #FFF;
+        .dropItem{
+            width: 100%;
+            height: .8rem;
+            line-height: .8rem;
+            text-align: center;
+            font-size: .3rem;
+            &.active{
+                background: #f0f0f0;
+            }
+        }
     }
 }
 
