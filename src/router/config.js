@@ -1,5 +1,8 @@
 import PageA from '../views/pageA';
 import PageB from '../views/pageB';
+import SchoolReport from '../views/schoolRport';
+import Honor from '../views/honor';
+import Prove from '../views/prove';
 import { Navigate } from 'react-router-dom';
 
 const Menu = [
@@ -17,6 +20,24 @@ const Menu = [
         path: '/b',
         title: 'login',
         element: <PageB />,
+        isMenu: false,
+    },
+    {
+        path: '/schoolReport',
+        title: 'schoolReport',
+        element: <SchoolReport />,
+        isMenu: false,
+    },
+    {
+        path: '/honor',
+        title: 'honor',
+        element: <Honor />,
+        isMenu: false,
+    },
+    {
+        path: '/prove',
+        title: 'prove',
+        element: <Prove />,
         isMenu: false,
     },
     // {
