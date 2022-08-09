@@ -1,6 +1,7 @@
 import PageA from '../views/pageA';
 import PageB from '../views/pageB';
 import Transcript from '../views/transcript';
+import Report from '../views/report';
 
 import { Navigate } from 'react-router-dom';
 
@@ -24,6 +25,11 @@ const Menu = [
         path: '/transcript',
         title: 'login',
         element: <Transcript />,
+        isMenu: false,
+    },{
+        path: '/report',
+        title: 'report',
+        element: <Report />,
         isMenu: false,
     },
     // {

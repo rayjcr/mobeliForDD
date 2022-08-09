@@ -28,6 +28,16 @@ html, body {
     -moz-opacity:0.7;
     opacity: 0.7;
 }
+.mt20{
+    margin-top: .2rem;
+}
+.mt40{
+    margin-top: .4rem;
+}
+.fullBox {
+    width: 100%;
+    height: 100%;
+}
 .Component_Page {
     width: 100%;
     height: 100%;
@@ -44,6 +54,7 @@ html, body {
     height: 1rem;
     padding: .2rem;
     background: #FFF;
+    box-shadow: 0 0 .2rem rgba($color: #000000, $alpha: .1);
     .dropdownDiv{
         width: 100%;
         height: 100%;
