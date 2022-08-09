@@ -1,5 +1,6 @@
 import React from 'react';
 import css from './report.module.scss';
+import StudentHead from '../../component/studentHead';
 import Echart from '../../common/echarts';
 
 export default function Report() {
@@ -73,17 +74,7 @@ export default function Report() {
 
   return (
     <div className={css.container}>
-        <div className={css.userDetailBox}>
-            <div className={css.stuHead}>
-
-            </div>
-            <div className={css.stuName}>
-                merchant
-            </div>
-            <div className={css.stuClassName}>
-                banji 2-3
-            </div>
-        </div>
+        <StudentHead />
         <div className={css.reportBody}>
             <div className={css.part_tit}>
                 merchant

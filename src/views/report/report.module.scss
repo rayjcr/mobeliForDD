@@ -4,34 +4,6 @@
     display: flex;
     padding-top: 1rem;
     flex-direction: column;
-    .userDetailBox {
-        width: 100%;
-        height: 1rem;
-        background: #FFF;
-        box-shadow: 0 0 .2rem rgba($color: #000000, $alpha: .1);
-        position: fixed;
-        padding: .15rem .2rem;
-        top: 0;
-        left: 0;
-        .stuHead {
-            width: .7rem;
-            height: .7rem;
-            border-radius: 50%;
-            background: #f0f0f0;
-            float: left;
-        }
-        .stuName {
-            float: left;
-            padding: 0 .2rem;
-            line-height: .7rem;
-            font-size: .34rem;
-        }
-        .stuClassName {
-            float: right;
-            line-height: .7rem;
-            font-size: .26rem;
-        }
-    }
     .reportBody {
         flex: 1;
         overflow: auto;

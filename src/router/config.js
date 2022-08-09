@@ -2,6 +2,7 @@ import PageA from '../views/pageA';
 import PageB from '../views/pageB';
 import Transcript from '../views/transcript';
 import Report from '../views/report';
+import StudyProves from '../views/studyproves ';
 
 import { Navigate } from 'react-router-dom';
 
@@ -30,6 +31,11 @@ const Menu = [
         path: '/report',
         title: 'report',
         element: <Report />,
+        isMenu: false,
+    },{
+        path: '/studyproves',
+        title: 'studyproves',
+        element: <StudyProves />,
         isMenu: false,
     },
     // {
