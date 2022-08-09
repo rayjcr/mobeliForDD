@@ -3,6 +3,7 @@ import PageB from '../views/pageB';
 import Transcript from '../views/transcript';
 import Report from '../views/report';
 import StudyProves from '../views/studyproves ';
+import StuAward from '../views/studentaward';
 
 import { Navigate } from 'react-router-dom';
 
@@ -36,6 +37,11 @@ const Menu = [
         path: '/studyproves',
         title: 'studyproves',
         element: <StudyProves />,
+        isMenu: false,
+    },{
+        path: '/stuaward',
+        title: 'studentaward',
+        element: <StuAward />,
         isMenu: false,
     },
     // {

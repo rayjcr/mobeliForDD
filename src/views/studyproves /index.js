@@ -4,7 +4,7 @@ import StudentHead from '../../component/studentHead';
 
 export default function StudyProves() {
   return (
-    <div  className={css.container}>
+    <div className={css.container}>
         <StudentHead isNoBg={true}/>
         <div className={css.provesBody}>
             <div className={css.provesBox}>

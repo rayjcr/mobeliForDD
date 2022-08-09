@@ -1,0 +1,91 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding-top: 1.3rem;
+    padding-bottom: 1.5rem;
+    flex-direction: column;
+    .awardBody {
+        flex: 1;
+        padding: 0 .2rem;
+        .awardMain {
+            width: 100%;
+            background: #FFF;
+            border-radius: .2rem;
+            padding: .2rem;
+            margin-bottom: .2rem;
+            .awardCourse{
+                font-size: .34rem;
+                font-weight: bold;
+                color: #AA8963;
+                padding-bottom: .2rem;
+            }
+            .awardBox {
+                width: 100%;
+                padding-left: 1.8rem;
+                position: relative;
+                .awardContent {
+                    width: 100%;
+                    min-height: 1.2rem;
+                    padding: 0 .2rem .2rem .3rem;
+                    border-left: 1px solid #e2e2e2;
+                    position: relative;
+                    .awardTit{
+                        font-size: .3rem;
+                        word-break: break-all;
+                    }
+                    .awardFrom {
+                        padding-top: .15rem;
+                        font-size: .26rem;
+                        color: #999;
+                    }
+                    &::before{
+                        content: '\20';
+                        background: #D7B48A;
+                        width: .15rem;
+                        height: .15rem;
+                        border-radius: 50%;
+                        position: absolute;
+                        top: .1rem;
+                        left: -.075rem;
+                    }
+                    &::after{
+                        content: '\20';
+                        background: rgba($color: #D7B48A, $alpha: .3);
+                        width: .3rem;
+                        height: .3rem;
+                        border-radius: 50%;
+                        position: absolute;
+                        top: .025rem;
+                        left: -.15rem;
+                    }
+                    .awardRightBox {
+                        position: absolute;
+                        top: 0;
+                        left: -1.8rem;
+                        width: 1.8rem;
+                        .awardTime {
+                            width: 100%;
+                            text-align: right;
+                            font-size: .24rem;
+                            padding-right: .3rem;
+                        }
+                        .awardNum {
+                            float: right;
+                            margin-top: .1rem;
+                            margin-right: .3rem;
+                            padding: .03rem .15rem;
+                            background: #D7B48A;
+                            border-radius: .1rem;
+                            color: #FFF;
+                        }
+                    }
+                    &:last-child{
+                        border-left: none;
+                    }
+                }
+                
+            }
+        }
+    }
+}
