@@ -10,6 +10,7 @@ import Attendance from '../views/attendance';
 import Daily from '../views/dailyResult';
 import Evaluate from '../views/evaluate';
 import { Navigate } from 'react-router-dom';
+import CommonRole from '../views/commonRole'
 
 const Menu = [
     {
@@ -26,6 +27,11 @@ const Menu = [
         path: '/b',
         title: 'login',
         element: <PageB />,
+        isMenu: false,
+    },{
+        path: '/commonRole',
+        title: 'commonRole',
+        element: <CommonRole />,
         isMenu: false,
     },{
         path: '/transcript',

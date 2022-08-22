@@ -3,7 +3,7 @@ import DropDownList from '../../component/dropdownlist';
 import css from './transcript.module.scss';
 
 const StudentIndex = memo(() => {
-
+console.log("pppppppppppppppp")
   const [selectIndex, setSelectIndex] = useState(0)
   const [dropList, setDropList] = useState([{
     key:'2021202201',

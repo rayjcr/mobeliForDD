@@ -1,4 +1,5 @@
-import React, { useState, useEffect, memo, useCallback } from 'react'
+import React, { useState, useEffect, memo } from 'react'
+import { useNavigate } from 'react-router-dom';
 import DropDownList from '../../component/dropdownlist';
 import { Popup, PickerView } from 'antd-mobile';
 import css from './transcript.module.scss';
@@ -6,12 +7,13 @@ import { connect } from 'react-redux';
 import { DownOutline } from 'antd-mobile-icons';
 import { getClassStudentByID } from '../../api/index';
 
-const TeacherIndex = memo(({ app }) => {
+const TeacherIndex = memo(({ app, redirectUrl }) => {
   console.log(app, 'app')
   const { teachClassList=[], semesterList=[], userInfo={} } = app;
   const [classListPicker,setClassListPicker] = useState(false);
   const [selectClassIndex, setSelectClassIndex] = useState(0);
   const [studentList, setStudentList] = useState([]);
+  const navigate = useNavigate();
 
   const onChangeClass = (e) => {
     
@@ -26,8 +28,8 @@ const TeacherIndex = memo(({ app }) => {
   }
 
   const clickStudent = (e) => {
-    console.log("pppp",e)
-    // this.props.history.push();
+    console.log(redirectUrl,"pppppp")
+    redirectUrl && navigate(`/${redirectUrl}`)
   }
 
   useEffect(() => {
