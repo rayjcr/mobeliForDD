@@ -32,7 +32,8 @@ export const getConfirmation = (mes='', callback = () => {}) => {
 
 service.interceptors.request.use(
     config => {
-        // console.log(config, 'config')
+        config.headers.Authorization = 'Basic c2FiZXI6c2FiZXJfc2VjcmV0';
+        config.headers['Blade-Auth'] = `bearer ${sessionStorage.getItem('token')}`;
         let reqData = '';
         reqData = config.url + config.method + JSON.stringify(config.params||config.data);
         removePending(reqData, true);

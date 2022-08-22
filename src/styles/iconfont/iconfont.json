@@ -1,0 +1,30 @@
+{
+  "id": "3596929",
+  "name": "亲亲-钉钉",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1264",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "200867",
+      "name": "3.1选中",
+      "font_class": "31xuanzhong",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1304911",
+      "name": "选中",
+      "font_class": "xuanzhong",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    }
+  ]
+}

@@ -32,3 +32,77 @@
         font-size: .26rem;
     }
 }
+
+.classHead {
+    width: 100%;
+    position: fixed;
+    height: 1rem;
+    background: #FFF;
+    box-shadow: 0 0 .2rem rgba($color: #000000, $alpha: .1);
+    padding: .15rem .2rem;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    .className {
+        font-size: .30rem;
+        height: .7rem;
+        line-height: .7rem;
+        float: left;
+        
+        
+    }
+    .timePicker {
+        float: right;
+        font-size: .32rem;
+        height: .7rem;
+        line-height: .7rem;
+    }
+    .classNum{
+        color: rgba(0, 0, 0, 0.4);
+    }
+}
+
+.mr20 {
+    margin-right: .2rem;
+}
+
+.parentBox {
+    .className{
+        display: flex;
+    }
+    .headImg{
+        width: .69rem;
+        height: .69rem;
+        display: block;
+        border-radius: .69rem;
+        margin-right: .13rem;
+    }
+    .name{
+        font-size: .38rem;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.8);
+    }
+    .njbj{
+        color: rgba(0, 0, 0, 0.32);
+        font-size: .3rem;
+        font-weight: 400;
+        margin-left: .13rem;
+    }
+}
+
+.dateTimeHeader {
+    width: 100%;
+    height: 1rem;
+    background: #FFF;
+    box-shadow: 0 0 .1rem rgba($color: #000000, $alpha: .1);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    span {
+        font-size: .32rem;
+        font-weight: 300;
+    }
+}

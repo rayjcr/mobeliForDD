@@ -4,7 +4,11 @@ import Transcript from '../views/transcript';
 import Report from '../views/report';
 import StudyProves from '../views/studyproves ';
 import StuAward from '../views/studentaward';
-
+import AwardList from '../views/awardlist';
+import Morning from '../views/morningCall';
+import Attendance from '../views/attendance';
+import Daily from '../views/dailyResult';
+import Evaluate from '../views/evaluate';
 import { Navigate } from 'react-router-dom';
 
 const Menu = [
@@ -42,6 +46,35 @@ const Menu = [
         path: '/stuaward',
         title: 'studentaward',
         element: <StuAward />,
+        isMenu: false,
+    },{
+        path: '/awardlist',
+        title: 'awardlist',
+        element: <AwardList />,
+        isMenu: false,
+    },
+    {
+        path: '/morningCall',
+        title: 'morningCall',
+        element: <Morning />,
+        isMenu: false,
+    },
+    {
+        path: '/attendance',
+        title: 'attendance',
+        element: <Attendance />,
+        isMenu: false,
+    },
+    {
+        path: '/dailyResult',
+        title: 'dailyResult',
+        element: <Daily />,
+        isMenu: false,
+    },
+    {
+        path: '/evaluate',
+        title: 'evaluate',
+        element: <Evaluate />,
         isMenu: false,
     },
     // {

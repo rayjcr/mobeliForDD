@@ -1,5 +1,14 @@
 // import { notification } from "antd";
 import { useEffect, useRef, useCallback } from 'react';
+/**
+ * 获取url参数 ex: getUrlParams('prop_name');
+ */
+export function getUrlParams(key) {
+  var res = new RegExp("(?:&|/?)" + key + "=([^&$]+)").exec(window.location.href)
+  // let reg = new RegExp(key + "=([^&$]+)");
+  // let result = window.location.href.match(reg);
+  return res ? res[1] : null;
+}
 
 /**
  * 平滑的滚动

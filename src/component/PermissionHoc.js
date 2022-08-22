@@ -5,7 +5,7 @@ export default function PermissionHoc (authorization) {
         return function Index(props) {
             // 根据组件权限列表和用户角色判断是否有此组件访问权限。
             const matchPermission = (value,userInfo) => {
-                return value.indexOf(userInfo?.role) 
+                return value.indexOf(userInfo?.type) 
             }
             return  (
             <PermissionContext.Consumer>
