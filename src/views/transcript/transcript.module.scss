@@ -14,16 +14,29 @@
             border-radius: .2rem;
             background: #FFF;
             overflow: hidden;
+            padding: 0 .2rem;
             .transHead {
-                background: #426666;
                 width: 100%;
                 height: 1rem;
-            }
-            .transHead {
-                padding: .2rem;
+                padding: .2rem 0;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                align-items: center;
+                color: #101010;
+                img{
+                    width: .5rem;
+                    height: .5rem;
+                    background: #eee;
+                }
+                .transStuName{
+                    font-size: .32rem;
+                }
+                .transClassName{
+                    font-size: .24rem;
+                }
             }
             .transBody {
-                padding: .2rem;
+                padding: .2rem 0;
                 table{
                     border-collapse: collapse;
                     width: 100%;

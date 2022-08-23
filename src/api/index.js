@@ -112,3 +112,11 @@ export async function getWeekList(params) {
         params,
     })
 }
+
+// 根据学年学期查询周次列表
+export async function getTranscriptInfo(params) {
+    return request(`${base}/exam/schoolReport/list`, {
+        method: 'post',
+        params,
+    })
+}

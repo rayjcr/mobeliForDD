@@ -2,34 +2,39 @@ import React, { useState, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import DropDownList from '../../component/dropdownlist';
 import { Popup, PickerView } from 'antd-mobile';
-import css from './transcript.module.scss';
+import css from './commonRole.module.scss';
 import { connect } from 'react-redux';
 import { DownOutline } from 'antd-mobile-icons';
 import { getClassStudentByID } from '../../api/index';
 
 const TeacherIndex = memo(({ app, redirectUrl }) => {
-  console.log(app, 'app')
   const { teachClassList=[], semesterList=[], userInfo={} } = app;
   const [classListPicker,setClassListPicker] = useState(false);
+  const [selectTermIndex, setSelectTermIndex] = useState(0);
   const [selectClassIndex, setSelectClassIndex] = useState(0);
   const [studentList, setStudentList] = useState([]);
   const navigate = useNavigate();
 
-  const onChangeClass = (e) => {
-    
+  const onChangeClass = (val, extend) => {
+    const item = extend.items && extend.items.length ? extend.items[0] : {}
+    const index = teachClassList.findIndex(e => {return e === item})
+    setSelectClassIndex(index)
   }
 
   let dropListProps = {
     dropList: semesterList,
-    selectIndex: selectClassIndex,
+    selectIndex: selectTermIndex,
     onChange: (item, index) => {
-      setSelectClassIndex(index);
+      setSelectTermIndex(index);
     }
   }
 
-  const clickStudent = (e) => {
-    console.log(redirectUrl,"pppppp")
-    redirectUrl && navigate(`/${redirectUrl}`)
+  const clickStudent = (item) => {
+    console.log(selectTermIndex)
+    redirectUrl && navigate(`/${redirectUrl}`, {state: {
+      ...item,
+
+    }});
   }
 
   useEffect(() => {
@@ -72,7 +77,6 @@ const TeacherIndex = memo(({ app, redirectUrl }) => {
       >
         <PickerView
           columns={[teachClassList]}
-          // renderLabel={item=>item.classAliasName}
           onChange={onChangeClass}
         />
       </Popup>

@@ -5,15 +5,12 @@ export default function DropDownList({ dropList=[], selectIndex=0, onChange }) {
 
   const [openSelect, setOpenSelect] = useState(false);
 
-  const onChangeSemester = (e) => {
-
-  }
-  
-  const selectItem = (item, index) => {
-    setOpenSelect(false);
+  const onChangeSemester = (val, extend) => {
+    const item = extend.items && extend.items.length ? extend.items[0] : {}
+    const index = dropList.findIndex(e => {return e === item})
     onChange(item, index);
-  };
-  
+  }
+
   return (
     <>
       <div className='dropdownBox'>
