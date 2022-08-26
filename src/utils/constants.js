@@ -3,6 +3,7 @@
 
 export const DDPageTypeUrl = {
     transcript: 'transcript', 
+    report: 'report', 
 }
 
 export const global = [

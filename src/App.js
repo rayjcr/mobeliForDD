@@ -3,7 +3,7 @@ import { BrowserRouter, useHref, useLocation, useMatch, useParams } from 'react-
 import store from './store';
 import Routers from './router';
 import './App.css';
-import { getBaseTeacherData, getTokenAndUserInfo,getBaseParentData } from './store/appSlice';
+import { getBaseTeacherData, getTokenAndUserInfo,getBaseParentData, getSemesterInfo } from './store/appSlice';
 import { createContext, useLayoutEffect, useState, memo } from 'react';
 import { getUrlParams } from './utils/tools';
 
@@ -34,17 +34,17 @@ const Permisson = memo(({ children }) => {
       let res = await dispatch(getTokenAndUserInfo(params));
       sessionStorage.setItem('token',res.access_token);
       setUserInfo(res);
+
+      await dispatch(getSemesterInfo())
       // 如果是教师，获取教师相关的基础数据
       // typeall：1（既是家长 又是老师）
       if(res.type===1) {
-        dispatch(getBaseTeacherData(res));
+      //   dispatch(getBaseTeacherData(res));
       }else if(res.type === 3){
-        dispatch(getBaseParentData(res));
+      //   dispatch(getBaseParentData(res));
       }
     }
-    if(!userInfo){
-      getUserInfo();
-    }
+    !userInfo && getUserInfo();
 
   }, [dispatch])
   return <PermissionContext.Provider value={userInfo}>

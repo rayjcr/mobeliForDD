@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Popup, PickerView } from 'antd-mobile';
 
-export default function DropDownList({ dropList=[], selectIndex=0, onChange }) {
+export default function DropDownList({ dropList=[], selectIndex=0, onChange, disable=false }) {
 
   const [openSelect, setOpenSelect] = useState(false);
 
@@ -13,8 +13,8 @@ export default function DropDownList({ dropList=[], selectIndex=0, onChange }) {
 
   return (
     <>
-      <div className='dropdownBox'>
-        <div className='dropdownDiv' onClick={()=>setOpenSelect(true)}>
+      <div className={`dropdownBox ${disable?'disable':''}`} >
+        <div className='dropdownDiv' onClick={()=>setOpenSelect(disable?false:true)}>
           {dropList[selectIndex]?.name}
         </div>
       </div>

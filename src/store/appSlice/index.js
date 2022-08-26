@@ -22,10 +22,35 @@ export const appSlice = createSlice({
 })
 // 根据username 和 password 获取用户基础信息
 export const getTokenAndUserInfo = params => async (dispatch, getState) => {
-    const { data } = await getToken(params);
+    let { data } = await getToken(params);
     dispatch(setState({userInfo:data}));
     return data
 }
+/****
+ * 1.获取学年学期列表
+ * 2.获取当前学年学期对象
+ */ 
+export const getSemesterInfo = params => async (dispatch, getState) => {
+    const res = await getSemesterList();
+    let curSemesterIndex = 0;
+    const semesterList = res.data.data.map((item, index) => {
+        if(item.isCurYear === 1) curSemesterIndex = index
+        return {
+            ...item,
+            label: item.name,
+            value: item.code,
+        }
+    })
+    dispatch(setState({
+        semesterList,
+        curSemester: {
+            ...semesterList[curSemesterIndex],
+            defaultSemesterIndex: curSemesterIndex
+        }
+    }));
+}
+
+
 
 /**
  * 一次性获取教师需要的基础数据

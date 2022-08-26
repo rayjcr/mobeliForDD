@@ -11,6 +11,7 @@ import Daily from '../views/dailyResult';
 import Evaluate from '../views/evaluate';
 import { Navigate } from 'react-router-dom';
 import CommonRole from '../views/commonRole'
+import ReportDetail from '../views/report/detail'
 
 const Menu = [
     {
@@ -42,6 +43,11 @@ const Menu = [
         path: '/report',
         title: 'report',
         element: <Report />,
+        isMenu: false,
+    },{
+        path: '/reportdetail',
+        title: 'reportDetail',
+        element: <ReportDetail />,
         isMenu: false,
     },{
         path: '/studyproves',

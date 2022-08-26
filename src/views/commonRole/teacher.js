@@ -5,52 +5,86 @@ import { Popup, PickerView } from 'antd-mobile';
 import css from './commonRole.module.scss';
 import { connect } from 'react-redux';
 import { DownOutline } from 'antd-mobile-icons';
-import { getClassStudentByID } from '../../api/index';
+import * as api from '../../api/index';
 
-const TeacherIndex = memo(({ app, redirectUrl }) => {
-  const { teachClassList=[], semesterList=[], userInfo={} } = app;
+const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
+  const { semesterList=[], userInfo={}, curSemester = {} } = app;
   const [classListPicker,setClassListPicker] = useState(false);
-  const [selectTermIndex, setSelectTermIndex] = useState(0);
-  const [selectClassIndex, setSelectClassIndex] = useState(0);
+  const [selectTermIndex, setSelectTermIndex] = useState(-1);
+  const [selectClassIndex, setSelectClassIndex] = useState(-1);
+  const [teachClassList, setTeachClassList] = useState([]);
   const [studentList, setStudentList] = useState([]);
   const navigate = useNavigate();
 
-  const onChangeClass = (val, extend) => {
-    const item = extend.items && extend.items.length ? extend.items[0] : {}
-    const index = teachClassList.findIndex(e => {return e === item})
-    setSelectClassIndex(index)
+
+  const getTeacherClass = async () => {
+    setSelectClassIndex(-1)
+    // setTeachClassList([])
+    const data = {
+        teacherId: userInfo.user_id,
+        schoolyearAndTermCode: semesterList[selectTermIndex]?.code
+    }
+    const res = await api.getClassListByTeacherID(data)
+    let resData = res.data.data.map(item=>{
+        return {
+            ...item,
+            label:item.dingNick,
+            value:item.id,
+        }
+    });
+    setTeachClassList(resData)
+    setSelectClassIndex(0)
   }
 
-  let dropListProps = {
+  const dropListProps = {
     dropList: semesterList,
     selectIndex: selectTermIndex,
     onChange: (item, index) => {
       setSelectTermIndex(index);
     }
   }
-
-  const clickStudent = (item) => {
-    console.log(selectTermIndex)
-    redirectUrl && navigate(`/${redirectUrl}`, {state: {
-      ...item,
-
-    }});
+  const onChangeClass = (val, extend) => {
+    const item = extend.items && extend.items.length ? extend.items[0] : {}
+    const index = teachClassList.findIndex(e => {return e === item})
+    setSelectClassIndex(index)
   }
 
-  useEffect(() => {
-    const getStudentList = async () => {
-      let studentList = await getClassStudentByID({
-        type: userInfo?.type,
-        squadId: teachClassList[selectClassIndex]?.id,
-        size: 100,
-        current:1,
-      })
-      console.log(studentList, 'studentList')
-      setStudentList([...studentList.data.data.records])
+  const clickStudent = (item) => {
+    const classInfo = teachClassList[selectClassIndex]
+    redirectUrl && navigate(`/${redirectUrl}`, {state: {
+      ...item,
+      classCode: classInfo.id,
+      className: classInfo.dingNick,
+      selectTermIndex,
+    }});
+  }
+  const getStudentList = async () => {
+    if(!teachClassList[selectClassIndex]?.id) {
+      setStudentList([])
+      return
     }
-    getStudentList();
-  }, [])
-  
+    const data = {
+      squadId: teachClassList[selectClassIndex].id,
+      size: 100,
+      current:1,
+    }
+    let studentList = await api.getClassStudentByID(data)
+    setStudentList([...studentList.data.data.records])
+  }
+
+  // 学年学期变化
+  useEffect(() => {
+    if(curSemester && selectTermIndex=== -1){
+      setSelectTermIndex(curSemester.defaultSemesterIndex)
+    }
+    if(selectTermIndex>-1){
+      getTeacherClass(selectTermIndex)
+    }
+  }, [curSemester, selectTermIndex])
+
+  useEffect(() => {
+    selectClassIndex>-1 && getStudentList()
+  }, [selectClassIndex])
 
   return (
     <div className={css.container}>
