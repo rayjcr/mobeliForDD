@@ -22,7 +22,311 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    .className {
+    flex-direction: row;
+    .className,.closeEval {
+        flex: 1;
         font-size: .26rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .num {
+            color: #BBB;
+            font-size: .32rem;
+        }
+    }
+    .closeEval {
+        color: #48807a;
+    }
+}
+
+.studentMain {
+    width: 100%;
+    min-height: 4rem;
+    background: #FFF;
+    border-radius: .2rem;
+    padding: 0 .2rem .2rem .2rem;
+    margin-top: .3rem;
+    box-shadow: 0 .05rem .05rem rgba($color: #666666, $alpha: .1);
+    &::after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+    .studentOpt {
+        width: 50%;
+        height: .8rem;
+        float: right;
+        display: flex;
+        flex-direction: row;
+        font-size: .24rem;
+        color: #999;
+        .opt {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+    .studentRow {
+        width: 100%;
+        float: left;
+        display: flex;
+        flex-direction: row;
+        margin: .15rem 0;
+        .halfBox {
+            width: 50%;
+        }
+        .leftBox {
+            box-sizing: border-box;
+            padding-left: .3rem;
+            transition: .2s all;
+            position: relative;
+        }
+        .checkStatus {
+            padding-left: .6rem;
+        }
+        .checkBox {
+            position: absolute;
+            width: .3rem;
+            height: .3rem;
+            border: .02rem solid #48807a;
+            border-radius: 50%;
+            top: .15rem;
+            left: .15rem;
+            transition: .2s all;
+            &.check{
+                background: #48807a;
+            }
+        }
+        .studentAvatar {
+            width: .6rem;
+            height: .6rem;
+            border-radius: .4rem;
+            overflow: hidden;
+            float: left;
+            border: .03rem solid #FFF;
+            box-shadow: 0 0 .04rem rgba($color: #000000, $alpha: .6);
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .studentName {
+            overflow: hidden;
+            height: .6rem;
+            line-height: .6rem;
+            padding-left: .2rem;
+            font-size: .26rem;
+            color: #444;
+        }
+        .eval_1,.eval_2{
+            height: .6rem;
+            line-height: .6rem;
+            display: inline-block;
+            width: 50%;
+            text-align: center;
+        }
+        
+    }
+}
+
+.evalFooter {
+    width: 100%;
+    height: 1.2rem;
+    background: #FFF;
+    box-shadow: 0 0 .05rem rgba($color: #000000, $alpha: .1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    .evalStatus {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40%;
+        float: left;
+        height: 100%;
+        font-size: .3rem;
+        .num {
+            color: #BBB;
+            font-size: .32rem;
+        }
+        .checkNum {
+            color: #48807a;
+            font-size: .32rem;
+        }
+    }
+    .evalOpt {
+        display: flex;
+        width: 60%;
+        float: right;
+        align-items: center;
+        justify-content: center;
+        padding: .2rem 0;
+        .evalBtn {
+            width: 2rem;
+            height: .8rem;
+            border-radius: .4rem;
+            color: #FFF;
+            background: #48807a;
+            font-size: .3rem;
+            line-height: .8rem;
+            text-align: center;
+            display: inline-block;
+        }
+        .evalBtn_1,.evalBtn_2 {
+            width: 1.7rem;
+            height: .8rem;
+            border-radius: .4rem;
+            color: #FFF;
+            font-size: .3rem;
+            line-height: .8rem;
+            text-align: center;
+            display: inline-block;
+            margin: 0 .2rem;
+        }
+        .evalBtn_1 {
+            background: #d69757;
+        }
+        .evalBtn_2 {
+            background: #48807a;
+        }
+        .evalBtn_3,.evalBtn_4 {
+            width: 1.7rem;
+            height: .8rem;
+            color: #FFF;
+            font-size: .3rem;
+            line-height: .8rem;
+            text-align: center;
+            display: inline-block;
+        }
+        .evalBtn_3 {
+            background: #6aa7a1;
+            border-radius: .4rem 0 0 .4rem;
+        }
+        .evalBtn_4 {
+            background: #48807a;
+            border-radius: 0 .4rem .4rem 0;
+        }
+    }
+}
+
+.masterHeader{
+    height: 1rem;
+    width: 100%;
+    line-height: 1rem;
+    border-bottom: 1px solid #d9d9d9;
+    .half {
+        width: 50%;
+        padding-left: .3rem;
+        font-size: .3rem;
+        display: inline-block;
+        span {
+            color: #999;
+        }
+    }
+}
+
+.studentHeader {
+    position: fixed;
+    width: 100%;
+    height: 1rem;
+    background: #FFF;
+    box-shadow: 0 0 .1rem rgba($color: #000000, $alpha: .1);
+    top: 0;
+    left: 0;
+    .studentInfo {
+        overflow: hidden;
+        padding: .15rem .3rem;
+        .studentImg {
+            float: left;
+            width: .7rem;
+            height: .7rem;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .studentName {
+            float: left;
+            font-size: .3rem;
+            line-height: .7rem;
+            padding-left: .2rem;
+        }
+        .changeStu {
+            float: left;
+            font-size: .28rem;
+            line-height: .7rem;
+            padding-left: .2rem;
+        }
+    }
+    .weeklyBox {
+        float: right;
+        width: 1.4rem;
+        font-size: .3rem;
+        line-height: .7rem; 
+        padding: .15rem 0;
+        margin-right: .2rem;
+    }
+}
+
+.dayStatistics {
+    width: 100%;
+    min-height: 2rem;
+    background: #FFF;
+    border-radius: .2rem;
+    overflow: hidden;
+    .StatisHeader {
+        width: 100%;
+        height: .8rem;
+        background: #48807A;
+        color: #FFF;
+        font-size: .32rem;
+        line-height: .8rem;
+        padding: 0 .3rem;
+    }
+    .StatisContent {
+        padding: .2rem .3rem;
+        .typeHead {
+            font-size: .3rem;
+            span {
+                color: #999;
+            }
+        }
+        .subjectStatis{
+            padding: .2rem 0 .35rem;
+            span{
+                border: 1px solid #AA8963;
+                border-radius: .1rem;
+                padding: .05rem .2rem;
+                color: #AA8963; 
+                font-size: .24rem;
+                margin-right: .25rem;
+            }
+        }
+    }
+}
+
+.stuList {
+    width: 2rem;
+    height: 3rem;
+    display: inline-block;
+    overflow: hidden;
+    margin: 0 .15rem;
+    .stuImage {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .stuName {
+        line-height: 1rem;
+        font-size: .32rem;
+        text-align: center;
     }
 }

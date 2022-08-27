@@ -84,7 +84,7 @@ export async function submitCheck(data) {
 
 // 获取家长
 export async function getMyChildren(params) {
-    return request(`${base}/parent/get-my-children`, {
+    return request(`${base}/parents/myChildren`, {
         method: 'get',
         params,
     })
@@ -112,3 +112,44 @@ export async function getWeekList(params) {
         params,
     })
 }
+
+// 保存评价信息
+export async function saveEval(data) {
+    return request(`${base}/evaluate/save`, {
+        method: 'post',
+        data,
+    })
+}
+
+// 获取评价信息 by 日期、班级、学科 For 班主任
+export async function getEvalInfo(params) {
+    return request(`${base}/evaluate/statistics`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 获取评价信息 by 日期、班级 For 班主任
+export async function getClassEvalInfo(params) {
+    return request(`${base}/evaluate/statistics/class`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 获取评价信息 by 日期、班级、学科
+export async function getEvalStudentInfo(params) {
+    return request(`${base}/evaluate/statistics/student`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 获取学生评价列表 by endTime, startTime, userId
+export async function getStudentEval(params) {
+    return request(`${base}/evaluate/student`, {
+        method: 'get',
+        params,
+    })
+}
+

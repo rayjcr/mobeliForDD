@@ -4,7 +4,7 @@ import { Popup, Calendar, PickerView } from 'antd-mobile';
 import { DownOutline, CalendarOutline } from 'antd-mobile-icons';
 import moment from 'moment';
 
-const DateTimeHeader = memo(() => {
+const DateTimeHeader = memo(({ checkDateTime }) => {
 
   const [dataPicker, setDataPicker] = useState(false);
   const [selDateTime, setSelDateTime] = useState(new Date());
@@ -24,6 +24,7 @@ const DateTimeHeader = memo(() => {
         <Calendar
         selectionMode='single'
         onChange={val => {
+          checkDateTime(val);
           setSelDateTime(val);
           setDataPicker(false);
           // console.log(val);

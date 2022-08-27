@@ -9,6 +9,8 @@ import Morning from '../views/morningCall';
 import Attendance from '../views/attendance';
 import Daily from '../views/dailyResult';
 import Evaluate from '../views/evaluate';
+import EvalMaster from '../views/evaluate/master';
+import StudentEval from '../views/evaluate/studentDetail';
 import { Navigate } from 'react-router-dom';
 
 const Menu = [
@@ -77,6 +79,20 @@ const Menu = [
         element: <Evaluate />,
         isMenu: false,
     },
+    {
+        path: '/master_eval',
+        title: 'masterEval',
+        element: <EvalMaster />,
+        isMenu: false,
+    },
+    {
+        path: '/student_eval',
+        title: 'StudentEval',
+        element: <StudentEval />,
+        isMenu: false,
+    },
+
+    
     // {
     //     path:'/',
     //     title: 'root',

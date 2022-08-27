@@ -11,7 +11,9 @@ export const appSlice = createSlice({
         curSemester: null,
         weeklyList: [],
         teachClassList: [],
-        subjectList:[]
+        subjectList:[],
+        studentLists:[],
+        selectStudent: null,
         // permission: [],
     },
     reducers: {
@@ -44,6 +46,7 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
         }
     })
     let curSemester = find(semesterList, {'isCurYear':1});
+    // let curSemester = find(semesterList, {'id':2});
     console.log(params, 'params--line-36')
 
     let weeklyList = [];
@@ -51,11 +54,17 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
     let subjectList = [];
     await Promise.all([
         getWeeklyList({ schoolYearAndTermCode: curSemester.code }),
-        getClassListByTeacherID({ teacherId: params.user_id }),
-        getClassListSubjectByTeacherID({teacherId: params.user_id}),
+        getClassListByTeacherID({ teacherId: params.user_id, schoolyearAndTermCode: curSemester.code}),
+        getClassListSubjectByTeacherID({teacherId: params.user_id, schoolyearAndTermCode: curSemester.code}),
     ]).then((res) => {
         console.log(res, 'promise.all')
-        weeklyList = res[0].data.data;
+        weeklyList = res[0].data.data.map(item=>{
+            return {
+                ...item,
+                label: item.name,
+                value: item.id,
+            }
+        });
         subjectList = res[2].data.data.map(item=>{
             return {
                 ...item,
@@ -98,13 +107,20 @@ export const getBaseParentData = params => async (dispatch, getState) => {
   
   await Promise.all([
     getMyChildren(),
-    getWeekList({schoolYearAndTermCode: currTerm.id}),
+    getWeekList({schoolYearAndTermCode: currTerm.code}),
   ]).then(res=>{
     studentLists = res[0].data.data;
-    weekList = res[1].data.data
+    weekList = res[1].data.data.map(item=>{
+        return{
+            ...item,
+            label: item.name,
+            value: item.id
+        }
+    })
   })
    dispatch(setState({
         studentLists,
+        weeklyList: weekList,
         currTerm,
         weekList,
         initComplete: true,

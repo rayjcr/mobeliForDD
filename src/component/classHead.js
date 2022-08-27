@@ -4,13 +4,14 @@ import { Popup, Calendar,PickerView } from 'antd-mobile';
 import { DownOutline, CalendarOutline } from 'antd-mobile-icons';
 import _ from 'lodash';
 
-const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSubject,currentTime,type }) => {
+const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSubject,currentTime,currStudent,weekList,currentWeek }) => {
   const [classListPicker,setClassListPicker] = useState(false)
   const [dataPicker, setDataPicker] = useState(false);
   const [selectIndex, setSelectIndex] = useState(0);
   const [selectSubjectIndex,setSubject] = useState(0);
   const [subjectPicker, setSubjectPicker] = useState(false);
-  
+  const [weekPicker,setWeekPicker] = useState(false)
+  const [selectWeekIndex,setSelectWeekIndex] = useState(0)
   const [curTime,setCurTime] = useState(null)
   const onChangeClass = (e)=>{
       if(classList[selectIndex].value===e[0]){
@@ -25,12 +26,23 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
     if(subjectList[selectSubjectIndex].value===e[0]){
       return
     } else {
+      console.log(e[0],1111)
       currentSubject(e[0]);
       setSubject(_.findIndex(subjectList,{value: e[0]}));
       
     }
   }
 
+  const onChangeWeek = (e)=>{
+    if(weekList[selectWeekIndex].value===e[0]){
+      return
+    } else {
+      let info = weekList.filter(item=>item.id == e[0])
+      currentWeek(info[0]);
+      setSelectWeekIndex(_.findIndex(weekList,{value: e[0]}));
+      
+    }
+  }
   useEffect(() => {
     // setSelectClass(_.find(classList,{}))
   }, [])
@@ -60,13 +72,13 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
       }
       {/* 家长 */}
       {
-        type == 'parent' &&<div className={[css.classHead,css.parentBox].join(' ')}>
+        currStudent &&<div className={[css.classHead,css.parentBox].join(' ')}>
             <div className={css.className}>
-              <img src={userInfo.avatar} className={css.headImg}/>
-              <span className={css.name}>{(userInfo.nick_name && userInfo.nick_name != 'null') || userInfo.user_name}</span>
-              <span className={css.njbj}>四年级一班</span>
+              <img src={currStudent.avatar} className={css.headImg}/>
+              <span className={css.name}>{currStudent.realName}</span>
+              <span className={css.njbj}>{currStudent.squadName}</span>
             </div>
-            <div className={css.timePicker}><CalendarOutline /> 第8周</div>
+            {weekList &&weekList.length > 0 && <div className={css.timePicker} onClick={()=>setWeekPicker(true)}><CalendarOutline /> {weekList[selectWeekIndex].label}</div>}
         </div>
       }
        
@@ -99,6 +111,19 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
           columns={[subjectList]}
           // renderLabel={item=>item.classAliasName}
           onChange={onChangeSubject}
+        />
+      </Popup>
+
+      {/* 切换周次 */}
+      <Popup
+        visible={weekPicker}
+        onMaskClick={() => {
+          setWeekPicker(false)
+        }} >
+        <PickerView
+          columns={[weekList]}
+          // renderLabel={item=>item.classAliasName}
+          onChange={onChangeWeek}
         />
       </Popup>
 

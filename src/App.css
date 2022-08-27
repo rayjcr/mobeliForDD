@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+.popup_control {
+  width: 100%;
+  height: .6rem;
+  overflow: hidden;
+}
+.popup_control .cancel {
+  font-size: .3rem;
+  line-height: .8rem;
+  float: left;
+  padding: 0 .3rem;
+  color: #999;
+}
+.popup_control .confirm {
+  font-size: .3rem;
+  line-height: .8rem;
+  color: #48807A;
+  float: right;
+  padding: 0 .3rem;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
