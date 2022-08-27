@@ -44,7 +44,7 @@ export async function getClassListByTeacherID(params) {
 
 // 根据班级ID查询学生
 export async function getClassStudentByID(params) {
-    return request(`${base}/new-student/list`, {
+    return request(`${base}/student/list`, {
         method: 'get',
         params,
     })
@@ -105,11 +105,50 @@ export async function getYearTermList(params) {
         params,
     })
 }
+
 // 根据学年学期查询周次列表
 export async function getWeekList(params) {
     return request(`${base}/pc/week/list`, {
         method: 'get',
         params,
+    })
+}
+
+// 获取学生成绩单详情
+export async function getTranscriptInfo(data) {
+    return request(`${base}/exam/schoolReport/query`, {
+        method: 'post',
+        data,
+    })
+}
+
+// 获取学生报告单列表
+export async function getReportList(data) {
+    return request(`${base}/exam/schoolReport/queryPdfList`, {
+        method: 'post',
+        data,
+    })
+}
+// 获取报告单PDF文件
+export async function getReporDetail(data) {
+    return request(`${base}/exam/schoolReport/queryPdf`, {
+        method: 'post',
+        data,
+    })
+}
+// 下载报告单PDF文件
+export async function getReporDownload(params) {
+    return request(`${base}/exam/schoolReport/downloadById`, {
+        method: 'get',
+        responseType: 'arraybuffer',
+        params,
+    })
+}
+// 我的成长查询列表（体质健康身体素质）
+export async function getPhysicalQuality(data) {
+    return request(`${base}/exam/schoolReport/queryPhysicalQualityList`, {
+        method: 'post',
+        data,
     })
 }
 
@@ -152,4 +191,3 @@ export async function getStudentEval(params) {
         params,
     })
 }
-

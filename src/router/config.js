@@ -12,6 +12,8 @@ import Evaluate from '../views/evaluate';
 import EvalMaster from '../views/evaluate/master';
 import StudentEval from '../views/evaluate/studentDetail';
 import { Navigate } from 'react-router-dom';
+import CommonRole from '../views/commonRole'
+import ReportDetail from '../views/report/detail'
 
 const Menu = [
     {
@@ -30,6 +32,11 @@ const Menu = [
         element: <PageB />,
         isMenu: false,
     },{
+        path: '/commonRole',
+        title: 'commonRole',
+        element: <CommonRole />,
+        isMenu: false,
+    },{
         path: '/transcript',
         title: 'login',
         element: <Transcript />,
@@ -38,6 +45,11 @@ const Menu = [
         path: '/report',
         title: 'report',
         element: <Report />,
+        isMenu: false,
+    },{
+        path: '/reportdetail',
+        title: 'reportDetail',
+        element: <ReportDetail />,
         isMenu: false,
     },{
         path: '/studyproves',
