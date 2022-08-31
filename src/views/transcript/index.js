@@ -9,7 +9,7 @@ import css from './transcript.module.scss';
 import * as api from '../../api/index';
 
 const Transcript = memo(({ app }) => {
-  const { semesterList=[] } = app;
+  const { semesterList=[], userInfo={} } = app;
   const [selectIndex, setSelectIndex] = useState(-1);
   const { state: studentInfo={} } = useLocation()
   const [ sourseData, setSourseData ] = useState({
@@ -74,6 +74,7 @@ const Transcript = memo(({ app }) => {
   }
 
   useEffect(() => {
+    console.log(selectIndex, studentInfo.studentCode)
     if(studentInfo && studentInfo.studentCode){
       studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
       selectIndex> -1 && getTranscriptInfo()
@@ -96,7 +97,7 @@ const Transcript = memo(({ app }) => {
 
   return (
     <div className={css.container}>
-        <DropDownList {...dropListProps} disable></DropDownList>
+        <DropDownList {...dropListProps} disable={userInfo.type ===1}></DropDownList>
         <div className={css.transcriptBox} ref={printElement}>
           <div className={css.transTable}>
             <div className={css.transHead}>
@@ -127,7 +128,7 @@ const Transcript = memo(({ app }) => {
               <table cellPadding={0} cellSpacing={0}>
                 <thead>
                   <tr>
-                      <th className={css.transth}>资优教育课程</th>
+                      <th className={css.transth2}>资优教育课程</th>
                       <th>态度习惯</th>
                       <th>知识技能</th>
                       <th>学分</th>
@@ -142,20 +143,21 @@ const Transcript = memo(({ app }) => {
                       <td>{item.score}</td>
                     </tr>
                   })}
-                  <tr>
+                  {/* <tr>
                     <td colSpan={5} className={css.alignLeft}>学分统计 资优教育课程：本学期{sourseData.totalScore}学分，其中额外记{sourseData.otherScore}分，累计{sourseData.historyOtherScore}学分。</td>
-                  </tr>
+                  </tr> */}
                   <tr>
-                    <th colSpan={5} className={css.alignLeft}>综合评优</th>
+                    <th colSpan={5}>综合评优</th>
                   </tr>
+                  {sourseData.honorTag && sourseData.honorTag.length ? <tr>
+                    <td colSpan={5} className={css.transTags}>
+                      {sourseData.honorTag.map((item, index) => {
+                        return <span key={`honor${index}`}>{item}</span>
+                      })}
+                    </td>  
+                  </tr>:<></>}
                 </tbody>
               </table>
-            </div>
-            <div className={css.transTags}>
-              {!sourseData.honorTag.length && '无'}
-              {sourseData.honorTag.map((item, index) => {
-                return <span key={`honor${index}`}>{item}</span>
-              })}
             </div>
             <div className={css.transSigns}>
               <div className={css.signSpan}>

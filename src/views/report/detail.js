@@ -8,10 +8,7 @@ import { getReporDownload } from '../../api/index';
 const ReportDetail = () => {
     const { state: reportInfo={} } = useLocation()
     const clickSure = async () => {
-console.log("ppppppp")
-        return
         let res = await getReporDownload({id: reportInfo.fileId})
-        console.log(res)
         if(!res || !res.data){
             return
         }
@@ -38,7 +35,7 @@ console.log("ppppppp")
         
         <div className={css.container}>
             {reportInfo.filePath?
-                <iframe id="pdf_container" src={`${reportInfo.filePath}#scrollbars=0&toolbar=0&statusbar=0`} width="100%" height="100%"></iframe>:<></>
+                <iframe id="pdf_container" src={`${reportInfo.filePath}#scrollbars=0&toolbar=0&statusbar=0`}></iframe>:<></>
             }
             <div className={css.saveTrans} onClick={clickSure}>保存到手机</div>
         </div>
