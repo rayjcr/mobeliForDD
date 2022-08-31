@@ -4,6 +4,12 @@ import { Popup, Calendar, PickerView } from 'antd-mobile';
 import { DownOutline, CalendarOutline } from 'antd-mobile-icons';
 import moment from 'moment';
 
+// moment.locale(‘zh-cn’, {
+//   weekdays: ‘周日_周一_周二_周三_周四_周五_周六’.split(’_’)
+//   })
+moment.locale('zh-cn', {
+  weekdays: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+})
 const DateTimeHeader = memo(({ checkDateTime }) => {
 
   const [dataPicker, setDataPicker] = useState(false);
@@ -12,7 +18,7 @@ const DateTimeHeader = memo(({ checkDateTime }) => {
   return (
     <>
       <div className={css.dateTimeHeader}>
-        <span onClick={() => setDataPicker(true)}><CalendarOutline /> {moment(selDateTime).format('YYYY-MM-DD e')} <DownOutline /></span>
+        <span className={css.dateTimeIcon} onClick={() => setDataPicker(true)}>{moment(selDateTime).format('YYYY-MM-DD dddd')} <DownOutline /></span>
       </div>
       <Popup
         visible={dataPicker}

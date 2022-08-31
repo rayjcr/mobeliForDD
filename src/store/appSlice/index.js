@@ -118,8 +118,7 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
     })
 
     dispatch(setState({
-        semesterList,
-        curSemester,
+        // curSemester,
         weeklyList,
         teachClassList,
         subjectList,

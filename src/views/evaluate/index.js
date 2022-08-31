@@ -23,6 +23,7 @@ const Evaluate = memo(({ app, dispatch }) => {
   const [classIndex, setClassIndex] = useState(0);
   const [subjectIndex, setSubjectIndex] = useState(0);
   const [evalStatus, setEvalStatus] = useState(0);
+  const [allCheck, setAllCheck] = useState(false);
   const [curDataTime, setCurDataTime] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
   const getClassStudent = async () => {
@@ -74,6 +75,7 @@ const Evaluate = memo(({ app, dispatch }) => {
   }
 
   const goEval = () => {
+    setAllCheck(false);
     setEvalStatus(1);
   }
 
@@ -117,13 +119,21 @@ const Evaluate = memo(({ app, dispatch }) => {
     }
   }
 
+  const allSelect = () => {
+      studentList.forEach(item => {
+        item.check = !allCheck;
+      })
+      setStudentList([...studentList]);
+      setAllCheck(!allCheck);
+  }
+
   const getFooter = () => {
     switch(evalStatus) {
       case 0:
         return (
           <>
             <div className={css.evalStatus} onClick={()=>masterMode()}>
-              班主任模式
+              <span className={css.bzr}>班主任模式</span>
             </div>
             <div className={css.evalOpt}>
               <div className={css.evalBtn_3} onClick={()=>goEval()}>评 价</div>
@@ -176,6 +186,9 @@ const Evaluate = memo(({ app, dispatch }) => {
           </div>
 
           <div className={css.studentMain}>
+            {evalStatus===1 &&<div className={css.checkAll} onClick={()=>allSelect()}>
+            <div className={[css.checkBox, allCheck ? css.check : ''].join(' ')}></div>
+            全部选择</div>}
             <div className={css.studentOpt}>
               <div className={css.opt}>表扬</div>
               <div className={css.opt}>需努力</div>
@@ -184,14 +197,14 @@ const Evaluate = memo(({ app, dispatch }) => {
               return (<div className={css.studentRow} key={index}>
                 <div className={[css.halfBox, css.leftBox, evalStatus===1 ? css.checkStatus:''].join(' ')} onClick={()=>checkStudent(index)}>
                   {evalStatus===1 && <div className={[css.checkBox, item.check ? css.check:''].join(' ')}></div>}
-                  <div className={css.studentAvatar}>
-                    <img src={item.avatar} alt='avatar' />
+                  <div className={[css.studentAvatar, !item.avatar&&css.noneAvatar].join(' ')}>
+                    {item.avatar ? <img src={item.avatar} alt='avatar' /> : item.realName.slice(-2)}
                   </div>
                   <div className={css.studentName}>{item.realName}</div>
                 </div>
                 <div className={css.halfBox}>
-                  <div className={css.eval_1}>{item.num_1||0}</div>
-                  <div className={css.eval_2}>{item.num_2||0}</div>
+                  <div className={css.eval_1}><span>{item.num_1||0}</span></div>
+                  <div className={css.eval_2}><span>{item.num_2||0}</span></div>
                 </div>
               </div>)
             })}

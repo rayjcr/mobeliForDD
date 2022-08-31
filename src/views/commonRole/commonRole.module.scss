@@ -62,9 +62,16 @@
                     background: #ddd;
                     margin: 0 auto;
                     overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     img {
                         width: 100%;
                         height: 100%;
+                    }
+                    &.noneAvatar{
+                        background: #6083E7;
+                        color: #FFF;
                     }
                 }
                 .memberName {

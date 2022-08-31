@@ -75,8 +75,8 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
 
   // 学年学期变化
   useEffect(() => {
-    console.log(curSemester, 'curSemester');
-    // console.log(selectTermIndex, 'selectTermIndex');
+    console.log(curSemester, 'curSemes2ter');
+    console.log(selectTermIndex, 'selectTermIndex');
     if(curSemester && selectTermIndex=== -1){
       setSelectTermIndex(curSemester.defaultSemesterIndex)
     }
@@ -105,7 +105,10 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
         <div className={css.memberMain}>
           {studentList.map((item, index) => {
             return <div key={Math.random()} className={css.memberUnit} onClick={() => clickStudent(item)}>
-              <div className={css.memberImage}><img src={item.avatar} alt='' /></div>
+              <div className={[css.memberImage, !item.avatar&&css.noneAvatar].join(' ')}>
+                {item.avatar ? <img src={item.avatar} alt='avatar' /> : item.realName.slice(-2)}
+                {/* <img src={item.avatar} alt='' /> */}
+              </div>
               <div className={css.memberName}>{item.realName}</div>
             </div>
           })}

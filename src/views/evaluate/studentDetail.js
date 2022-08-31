@@ -121,7 +121,10 @@ const StudentEval = memo(({ app }) => {
           <CalendarOutline /> {weeklyList[weekIndex]?.name}
           </div>
           <div className={css.studentInfo}>
-            <div className={css.studentImg}><img src={curStudent?.avatar} alt='' /></div>
+            <div className={[css.studentImg, !curStudent?.avatar&&css.noneAvatar].join(' ')}>
+              {curStudent?.avatar ? <img src={curStudent?.avatar} alt='avatar' /> : curStudent?.realName?.slice(-2)}  
+              {/* <img src={curStudent?.avatar} alt='' /> */}
+            </div>
             <div className={css.studentName}>{curStudent?.realName}</div>
             {studentLists?.length>0 && <div className={css.changeStu} onClick={()=>changeStudent()}><TeamOutline /> 切换学生</div>}
           </div>

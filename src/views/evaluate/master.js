@@ -123,14 +123,14 @@ const EvalMaster = memo(({ app }) => {
             {studentList.map((item, index) => {
               return (<div className={css.studentRow} key={index}>
                 <div className={[css.halfBox, css.leftBox].join(' ')} onClick={()=>checkStudent(item)}>
-                  <div className={css.studentAvatar}>
-                    <img src={item.avatar} alt='avatar' />
+                  <div className={[css.studentAvatar, !item.avatar&&css.noneAvatar].join(' ')}>
+                  {item.avatar ? <img src={item.avatar} alt='avatar' /> : item.realName.slice(-2)}
                   </div>
                   <div className={css.studentName}>{item.realName}</div>
                 </div>
                 <div className={css.halfBox}>
-                  <div className={css.eval_1}>{item.num_1||0}</div>
-                  <div className={css.eval_2}>{item.num_2||0}</div>
+                  <div className={css.eval_1}><span>{item.num_1||0}</span></div>
+                  <div className={css.eval_2}><span>{item.num_2||0}</span></div>
                 </div>
               </div>)
             })}
@@ -140,7 +140,7 @@ const EvalMaster = memo(({ app }) => {
 
         <div className={css.evalFooter}>
           <div className={css.evalStatus} onClick={()=>teacherMode()}>
-            任课教师模式
+            <span className={css.rkjs}>任课教师模式</span>
           </div>
         </div>
 
