@@ -10,6 +10,7 @@
     "antd-mobile": "^5.21.0",
     "antd-mobile-icons": "^0.3.0",
     "axios": "^0.27.2",
+    "dingtalk-jsapi": "^3.0.7",
     "echarts": "^5.3.2",
     "html2canvas": "^1.4.1",
     "lodash": "^4.17.21",
@@ -22,6 +23,7 @@
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
+    "vconsole": "^3.14.6",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {

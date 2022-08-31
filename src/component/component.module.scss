@@ -60,6 +60,22 @@
     .classNum{
         color: rgba(0, 0, 0, 0.4);
     }
+    &.noArriveHead{
+        top: .76rem;
+        
+    }
+    // 教师
+    &.teacherHead{
+        .timePicker{
+            float: none;
+            text-align: center;
+        }
+        .subject{
+            position: absolute;
+            right: 0;
+            top: 0.15rem;
+        }
+    }
 }
 
 .mr20 {
@@ -101,8 +117,16 @@
     align-items: center;
     top: 0;
     left: 0;
+    .dateTimeIcon{
+        background: url(../styles/images/timePicker.png) no-repeat left center;
+        background-size: auto 100%;
+        padding-left: .6rem;
+    }
     span {
         font-size: .32rem;
         font-weight: 300;
     }
+}
+.alignCenter{
+    align-items: center;
 }

@@ -3,7 +3,13 @@
 
 export const DDPageTypeUrl = {
     transcript: 'transcript', 
-    report: 'report', 
+    report: 'report',
+    evaluate: 'evaluate',
+    stuaward: 'stuaward',
+    studyproves: 'studyproves',
+    morningCall:'morningCall',
+    parent:"parent",
+    bzr:"bzr"
 }
 
 export const global = [

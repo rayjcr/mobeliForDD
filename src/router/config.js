@@ -10,11 +10,14 @@ import Attendance from '../views/attendance';
 import Daily from '../views/dailyResult';
 import Evaluate from '../views/evaluate';
 import EvalMaster from '../views/evaluate/master';
+import Record from '../views/morningCall/record'
 import StudentEval from '../views/evaluate/studentDetail';
+import Bzr from '../views/morningCall/bzr';
+import BzrDetail from '../views/morningCall/bzrDetail';
+import Parent from '../views/morningCall/parent';
 import { Navigate } from 'react-router-dom';
 import CommonRole from '../views/commonRole'
 import ReportDetail from '../views/report/detail'
-
 const Menu = [
     {
         path: '/',
@@ -71,6 +74,30 @@ const Menu = [
         path: '/morningCall',
         title: 'morningCall',
         element: <Morning />,
+        isMenu: false,
+    },
+    {
+        path: '/record',
+        title: 'record',
+        element: <Record />,
+        isMenu: false,
+    },
+    {
+        path: '/bzr',
+        title: 'bzr',
+        element: <Bzr />,
+        isMenu: false,
+    },
+    {
+        path: '/parent',
+        title: 'parent',
+        element: <Parent />,
+        isMenu: false,
+    },
+    {
+        path: '/bzrDetail',
+        title: 'bzrDetail',
+        element: <BzrDetail />,
         isMenu: false,
     },
     {

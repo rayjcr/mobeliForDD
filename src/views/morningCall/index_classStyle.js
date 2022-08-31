@@ -146,14 +146,14 @@ class Footer extends React.Component{
   render(){
       let foot = null
       // 点名前
-      if(this.state.status == 0){
+      if(this.state.status === 0){
         foot = (
           <div className={css.footItem}>
               <Button className={[css.w100,css.btn]} color='primary' onClick={()=>this.props.calling(1)}>点名</Button>
           </div>
         )
       }
-      else if(this.state.status == 1){
+      else if(this.state.status === 1){
         // 点名时
         foot = (
           <div className={css.footItem}>

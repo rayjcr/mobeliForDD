@@ -16,7 +16,6 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
   const [studentList, setStudentList] = useState([]);
   const navigate = useNavigate();
 
-
   const getTeacherClass = async () => {
     setSelectClassIndex(-1)
     // setTeachClassList([])
@@ -43,6 +42,7 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
       setSelectTermIndex(index);
     }
   }
+
   const onChangeClass = (val, extend) => {
     const item = extend.items && extend.items.length ? extend.items[0] : {}
     const index = teachClassList.findIndex(e => {return e === item})
@@ -58,6 +58,7 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
       selectTermIndex,
     }});
   }
+
   const getStudentList = async () => {
     if(!teachClassList[selectClassIndex]?.id) {
       setStudentList([])
@@ -74,6 +75,8 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
 
   // 学年学期变化
   useEffect(() => {
+    console.log(curSemester, 'curSemes2ter');
+    console.log(selectTermIndex, 'selectTermIndex');
     if(curSemester && selectTermIndex=== -1){
       setSelectTermIndex(curSemester.defaultSemesterIndex)
     }
@@ -83,8 +86,15 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
   }, [curSemester, selectTermIndex])
 
   useEffect(() => {
+    // console.log(selectClassIndex, 'selectClassIndex-A')
     selectClassIndex>-1 && getStudentList()
   }, [selectClassIndex])
+
+  // useEffect(() => {
+  //   console.log(selectClassIndex, 'selectClassIndex-B')
+  //   selectClassIndex>-1 && getStudentList()
+  // }, [])
+  
 
   return (
     <div className={css.container}>
@@ -95,7 +105,10 @@ const TeacherIndex = memo(({ app, redirectUrl, dispatch }) => {
         <div className={css.memberMain}>
           {studentList.map((item, index) => {
             return <div key={Math.random()} className={css.memberUnit} onClick={() => clickStudent(item)}>
-              <div className={css.memberImage}><img src={item.avatar} alt='' /></div>
+              <div className={[css.memberImage, !item.avatar&&css.noneAvatar].join(' ')}>
+                {item.avatar ? <img src={item.avatar} alt='avatar' /> : item.realName.slice(-2)}
+                {/* <img src={item.avatar} alt='' /> */}
+              </div>
               <div className={css.memberName}>{item.realName}</div>
             </div>
           })}

@@ -44,7 +44,7 @@
     min-height: 4rem;
     background: #FFF;
     border-radius: .2rem;
-    padding: 0 .2rem .2rem .2rem;
+    padding: .2rem .2rem .2rem .2rem;
     margin-top: .3rem;
     box-shadow: 0 .05rem .05rem rgba($color: #666666, $alpha: .1);
     &::after {
@@ -52,9 +52,28 @@
         display: block;
         clear: both;
     }
+    .checkAll {
+        font-size: .24rem;
+        line-height: .6rem;
+        position: relative;
+        padding-left: .6rem;
+        .checkBox {
+            position: absolute;
+            width: .3rem;
+            height: .3rem;
+            border: .02rem solid #48807a;
+            border-radius: 50%;
+            top: .15rem;
+            left: .15rem;
+            transition: .2s all;
+            &.check{
+                background: #48807a;
+            }
+        }
+    }
     .studentOpt {
         width: 50%;
-        height: .8rem;
+        height: .4rem;
         float: right;
         display: flex;
         flex-direction: row;
@@ -72,7 +91,7 @@
         float: left;
         display: flex;
         flex-direction: row;
-        margin: .15rem 0;
+        margin: 0 0 .3rem 0;
         .halfBox {
             width: 50%;
         }
@@ -103,12 +122,19 @@
             height: .6rem;
             border-radius: .4rem;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             float: left;
             border: .03rem solid #FFF;
             box-shadow: 0 0 .04rem rgba($color: #000000, $alpha: .6);
             img {
                 width: 100%;
                 height: 100%;
+            }
+            &.noneAvatar{
+                background: #6083E7;
+                color: #FFF;
             }
         }
         .studentName {
@@ -125,8 +151,21 @@
             display: inline-block;
             width: 50%;
             text-align: center;
+            span {
+                padding-left: .6rem;
+                display: inline-block;
+                height: .45rem;
+                line-height: .45rem;
+            }
         }
-        
+        .eval_1 span{
+            background: url(../../styles/images/icon1.png) no-repeat left center;
+            background-size:  auto 100%;
+        }
+        .eval_2 span{
+            background: url(../../styles/images/icon2.png) no-repeat left center;
+            background-size:  auto 100%;
+        }
     }
 }
 
@@ -146,6 +185,16 @@
         float: left;
         height: 100%;
         font-size: .3rem;
+        .bzr{
+            background: url(../../styles/images/bzrms.png) no-repeat left center;
+            background-size: auto 100%;
+            padding-left: .6rem;
+        }
+        .rkjs{
+            background: url(../../styles/images/rkjsms.png) no-repeat left center;
+            background-size: auto 100%;
+            padding-left: .6rem;
+        }
         .num {
             color: #BBB;
             font-size: .32rem;
@@ -214,6 +263,7 @@
     height: 1rem;
     width: 100%;
     line-height: 1rem;
+    margin-bottom: .2rem;
     border-bottom: 1px solid #d9d9d9;
     .half {
         width: 50%;
@@ -241,11 +291,18 @@
             float: left;
             width: .7rem;
             height: .7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
             overflow: hidden;
             img {
                 width: 100%;
                 height: 100%;
+            }
+            &.noneAvatar{
+                background: #6083E7;
+                color: #FFF;
             }
         }
         .studentName {

@@ -1,55 +1,86 @@
 import React, { memo, useState, useEffect } from 'react';
 import css from './morning.module.scss';
 import ClassHead from '../../component/classHead';
-import { Button ,Collapse,Toast,Popup,Radio, Space,TextArea,SpinLoading,Result,Form} from 'antd-mobile';
+import { Button ,Collapse,Toast,Popup,Radio, Space,TextArea,SpinLoading,Result,Form,Empty} from 'antd-mobile';
 import { DownOutline } from 'antd-mobile-icons';
-import {getSigninByUserId} from '../../api/index'
+import {getStudentSignin,saveParentReason} from '../../api/index'
 import _, { forEach } from 'lodash';
+import {getWeekStartEndTime,getYearTime} from '../../styles/common.js'
+import { connect } from 'react-redux';
+import PermissionHoc from '../../component/PermissionHoc';
 
 const parentMorning = memo(({ app, dispatch })=>{
     const {studentLists, userInfo,currTerm,weekList, initComplete} = app
-    const [currPerson,setCurrPerson] = useState(null)
+    const [currPerson,setCurrPerson] = useState(0)
     const [studentList,setStudentList] = useState([])
     const [reasonVisible,setResonVisible] = useState(false)
     const [currInfoForReason,setCurrInfoForReason] = useState(null)
     const [reasonValue,setReasonValue] = useState('')
     const [reason,setReason] = useState('')
     const [loading,setLoading] = useState(false)
-    const [reasonVis,setReasonVis] = useState(false)
-    const [currWeek,setCurrWeek] = useState(false)
-    const getInfo = async(data,week)=>{
+    const [reasonVis,setReasonVis] = useState(true)
+    const [currWeek,setCurrWeek] = useState(0)
+    const [saveStatus,setSaveStatus] = useState(null)
+    const getInfo = async()=>{
+        let data = studentLists[currPerson]
+        let week = weekList[currWeek]
         if(week){
-            let start = week.openTime
-            let end = week.closeTime
-            // 周次取出星期一至星期五的时间
-            let start_temp = new Date(start).getTime()
-            let end_temp = new Date(end).getTime()
-            console.log(start_temp,end_temp)
-            let len = parseInt((end_temp - start_temp) / (60 * 60 * 24 * 1000))
-            console.log(len)
-            const getTime = (data)=>{
-                let time = new Date(data)
-                let year = time.getFullYear()
-                let month = time.getMonth() + 1
-                let day = time.getDate()
-                return year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)
-            }
+             console.log(userInfo,'user')
+            let weekList = getWeekStartEndTime(week)
+            let {len,start_time,end_time} = weekList
             let datas = []
             const getData = async(time)=>{
-                let res = await getSigninByUserId({
-                    sort:1,
+                let res = await getStudentSignin({
+                    sort:'',
                     squadId: data.squadId,
                     userId: data.id,
                     time,
                 })
-                if(res.data.code ==200){
-                    datas.push({time})
-                }   
-                
-                
+                if(res.data.code === 200){
+                    // status 1签到，2未到 
+                    // reason 1，病假，2事假，3其他
+                    if(res.data.data.length > 0){
+                        let curr_data = res.data.data.filter(item=>item.userId == studentLists[currPerson].id)
+                        console.log(studentLists[currPerson],'111111------')
+                        console.log(curr_data,'313231')
+                        if(curr_data.length > 0){
+                            let str = _.groupBy(curr_data,'status')
+                            let status_ok = str[1] || []
+                            let status_no = (str[2] || []).filter(item=>item.reasonstatus != 1 && item.reasonstatus != 2)
+                            let status_leave = (str[2] || []).filter(item=>(item.reasonstatus == 1 || item.reasonstatus == 2))
+                            let sort_data = null
+                            const getDataStatus = (data,status)=>{
+                                let status_data = []
+                                let subject_sort = _.groupBy(data, 'sort')
+                                Object.keys(subject_sort).forEach(item=>{
+                                    let subject_item = _.groupBy((subject_sort[item] || []),'subjectName')
+                                    
+                                    Object.keys(subject_item).forEach(e=>{
+                                        status_data.push({
+                                            status,
+                                            mc:e,
+                                            id: subject_item[e][0].id
+                                        })
+                                    })
+                                })
+                                return status_data
+                            }
+                            sort_data = {
+                                "time":time,
+                                "noArrive": getDataStatus(status_no,2),
+                                "leave": getDataStatus(status_leave,3),
+                                "arrive":getDataStatus(status_ok,1),
+                            }
+                            datas.push(sort_data)
+                        }
+                        
+                    }
+                    
+                }
             }
+            
             for(var i=0;i<len;i++){
-                let str = getTime(start_temp + 60 * 60 * 24 * 1000 * i)
+                let str = getYearTime(start_time + 60 * 60 * 24 * 1000 * i)
                 await getData(str)
             }
             setStudentList([...datas])
@@ -59,82 +90,82 @@ const parentMorning = memo(({ app, dispatch })=>{
     }
     useEffect(() => {
         if(initComplete){
-            getInfo(currPerson || studentLists[0],currWeek || weekList[0])
-            setCurrPerson(studentLists[0])
+            getInfo()
         }
-      }, [initComplete,currWeek])
+      }, [initComplete,currWeek,currPerson])
     
       const collToReason = {
         reasonVisible,
         setResonVisible,
         currInfoForReason,
         setCurrInfoForReason,
-        loading,
-        setLoading,
-        reasonVis,
         setReasonVis,
-        reasonValue,
-        setReasonValue,
-        reason,
-        setReason
+        setLoading,
       }
+
+      const submit = ()=>{
+            console.log(reasonValue)
+            console.log(reason)
+            console.log(currInfoForReason,'1212')
+            if(!reasonValue){
+                Toast.show({
+                    content: '未到原因不能为空！',
+                  })
+                return
+            }
+            setReasonVis(false)
+            setLoading(true)
+            saveParentReason({
+                reasonstatus: reasonValue,
+                reason,
+                id: currInfoForReason.id
+            }).then(res=>{
+                if(res.data.code === 200){
+                    setSaveStatus({status:'success',msg:"保存成功"})
+                    setTimeout(()=>{
+                        setLoading(false)
+                    },1000)
+                    setTimeout(()=>{
+                        setResonVisible(false)
+                        cancel()
+                        getInfo()
+                    },2000)
+                }
+            })
+        }
+        const cancel = ()=>{
+            setResonVisible(false)
+            setReasonValue('')
+            setReason('')
+            setLoading(false)
+        }
+        const popProps = {
+            reasonVisible,reasonVis,loading,reasonValue,reason,setReason,submit,saveStatus,cancel,setReasonValue
+        }
     return(
         <div className={css.container}>
-            <ClassHead currStudent={currPerson} weekList={weekList} currentWeek={(val)=>setCurrWeek(val)}/>
-            <div className={css.paddingBody}>
+            <ClassHead childList={studentLists} weekList={weekList} currentWeekIndex={(val)=>setCurrWeek(val)} currentChildIndex={(val)=>setCurrPerson(val)}/>
+            <div className={[css.paddingBody,css.pb0].join(' ')}>
                 {
-                    studentList.map(item=>{
+                    studentList.length > 0 && studentList.map(item=>{
                         return(
                             <CollapseItem key={item.time} studentList={item} collToReason={collToReason} />
                         )
                     })
                 }
+                {
+                    studentList.length == 0 && <Empty className={css.empty} description='暂无数据'/>
+                }
             </div>
+            <PopItem {...popProps}/>
         </div>
     )
 })
 
-const SubjectItem = ({statusName,name,studentList,edit,collToReason})=>{
-    const reason = ()=>{
-        collToReason.setResonVisible(true)
-        collToReason.setReasonVis(true)
-        // 获取点击学科的数据
-    }
-    const submit = ()=>{
-
-        collToReason.setReasonVis(false)
-        collToReason.setLoading(true)
-        setTimeout(()=>{
-            collToReason.setLoading(false)
-        },3000)
-    }
-    const cancel = ()=>{
-        collToReason.setResonVisible(false)
-        collToReason.setReasonValue('')
-        collToReason.setReason('')
-    }
-    const [form] = Form.useForm()
+export const PopItem = ({reasonVisible,reasonVis,loading,reasonValue,reason,setReason,submit,saveStatus,cancel,setReasonValue})=>{
     return(
-        <div className={css.subjectItem}>
-            <div className={css.head}>
-                <span className={css.icon}></span>
-                <label className={css.iconText}>{statusName}</label>
-            </div>
-            <div className={css.subjectList}>
-                {
-                    studentList[name].map((item,index)=>{
-                        return(
-                            <div className={css.subjectListItem} key={index+'subject'}>
-                                <label className={css.title}>英语</label>
-                                {edit && <span className={[css.edit,'iconfont','icon-bianji'].join(' ')} onClick={()=>reason()}></span>}
-                            </div>
-                        )
-                    })
-                }
-                
-            </div>
-            <Popup
-              visible={collToReason.reasonVisible}
+        <Popup
+              visible={reasonVisible}
               onMaskClick={() => cancel()}
               bodyStyle={{
                 borderTopLeftRadius: '8px',
@@ -156,36 +187,40 @@ const SubjectItem = ({statusName,name,studentList,edit,collToReason})=>{
                     </div>
                     <div className={css.content}>
                         {
-                            collToReason.reasonVis && !collToReason.loading && <div className={css.form}>
+                            reasonVis && !loading && <div className={css.form}>
                                 <Form>
                                     
-                                        <Radio.Group value={collToReason.reasonValue} onChange={(val)=>{collToReason.setReasonValue(val)}}>
+                                        <Radio.Group value={reasonValue} onChange={(val)=>{setReasonValue(val)}}>
                                             <Space direction='vertical'>
-                                                <Radio value='1'>事假</Radio>
-                                                <Radio value='2'>病假</Radio>
+                                                <Radio value='1'>病假</Radio>
+                                                <Radio value='2'>事假</Radio>
                                                 <Radio value='3'>其他</Radio>
                                             </Space>
                                         </Radio.Group>
                                    
-                                    {
+                                    
                                         
-                                        collToReason.reasonValue && <TextArea value={collToReason.reason} onChange={(val)=>{collToReason.setReason(val)}} showCount maxLength={100}/>
+                                    <TextArea value={reason} onChange={(val)=>{setReason(val)}} showCount maxLength={100}/>
                                           
-                                    }
+                                    
                                     <Button className={css.btn} onClick={()=>submit()}>确定</Button>
                                 </Form>
                             </div>
                         }
                         {
-                            collToReason.loading && <SpinLoading color='#30827A' className={css.loading}/>
+                            loading && <SpinLoading color='#30827A' className={css.loading}/>
                         }
                         {
-                            !collToReason.reasonVis &&!collToReason.loading && 
+                            !reasonVis &&!loading && 
                             <div className={css.resultBox}>
+                              {
+                                saveStatus && 
                                 <Result
-                                    status='success'
-                                    title='操作成功'
-                                />
+                                    status={saveStatus.status}
+                                    title={saveStatus.msg}
+                                /> 
+                              }
+                               
                             </div>
                         }
                         
@@ -193,6 +228,39 @@ const SubjectItem = ({statusName,name,studentList,edit,collToReason})=>{
                 </div>
               }
             </Popup>
+    )
+}
+
+const SubjectItem = ({statusName,name,studentList,edit,collToReason})=>{
+    const reason = (data)=>{
+        collToReason.setLoading(false)
+        collToReason.setResonVisible(true)
+        collToReason.setReasonVis(true)
+        collToReason.setCurrInfoForReason(data)
+        // 获取点击学科的数据
+    }
+    
+    const [form] = Form.useForm()
+    return(
+        <div className={css.subjectItem}>
+            <div className={css.head}>
+                <span className={[css.icon,(statusName === '未到'?css.noArrive : (statusName === '已到' ? css.arrive : css.leave))].join(' ')}></span>
+                <label className={css.iconText}>{statusName}</label>
+            </div>
+            <div className={css.subjectList}>
+                {
+                    studentList[name].map((item,index)=>{
+                        return(
+                            <div className={css.subjectListItem} key={index+'subject'}>
+                                <label className={css.title}>{item.mc}</label>
+                                {edit && <span className={[css.edit,'iconfont','icon-bianji'].join(' ')} onClick={()=>reason(item)}></span>}
+                            </div>
+                        )
+                    })
+                }
+                
+            </div>
+            
         </div>
     )
 
@@ -204,7 +272,7 @@ const CollapseItem = ({studentList,collToReason})=>{
         <Collapse defaultActiveKey={['1']} className={css.coll}>
             <Collapse.Panel key='1' title={( 
                 <div className={[css.collHead].join(' ')}>
-                    <span className={css.time}>{studentList['time']}</span>
+                    <span className={css.time}>{studentList.time}</span>
                 </div>
             )}>
             <div className={css.subject}>
@@ -224,4 +292,4 @@ const mapStateToProps = (state) => {
     return { app };
 }
 
-export default parentMorning
+export default connect(mapStateToProps)(PermissionHoc([1,2,3])(parentMorning))
