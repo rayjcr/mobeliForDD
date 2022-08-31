@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2768287",
+      "name": "领导",
+      "font_class": "lingdao",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "27867457",
+      "name": "已确认",
+      "font_class": "yiqueren",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "2077587",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "1183043",
+      "name": "记录",
+      "font_class": "jilu",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "10635165",
+      "name": "空心-提示-提醒",
+      "font_class": "hollow-warning",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
       "icon_id": "4510299",
       "name": "语音关闭",
       "font_class": "yuyinguanbi",

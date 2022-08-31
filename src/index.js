@@ -5,6 +5,8 @@ import './styles/common.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './styles/iconfont/iconfont.css'
+import VConsole from 'vconsole'
+const vConsole = new VConsole()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <App />

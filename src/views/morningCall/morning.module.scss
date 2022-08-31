@@ -9,7 +9,44 @@
         padding-bottom: 1.65rem;
         overflow: auto;
         flex: 1;
-        .memberBox {
+        position: relative;
+        .successStatus{
+            position: absolute;
+            right: .5rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            color: rgba(48, 130, 122, 0.3);
+            z-index: 10;
+        }
+        .changeTimeReacod{
+            height: .92rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .classList{
+                .mc{
+                    font-size: .3rem;
+                    color: rgba(0, 0, 0, 0.8);
+                }
+                .num{
+                    font-size: .3rem;
+                    color: rgba(0, 0, 0, 0.4);
+                }
+            }
+            .record{
+                .icon{
+                    color: #30827A;
+                    font-size: .3rem;
+                }
+                .mc{
+                    font-size: .3rem;
+                    color: rgba(0, 0, 0, 0.8);
+                    margin-left: .11rem;
+                }
+            }
+        }
+        .memberBox,
+        .changeTimeReacod {
             width: 100%;
             // min-height: 3rem;
             background: #FFF;
@@ -18,6 +55,10 @@
             box-shadow: 0 0 .1rem rgba($color: #000000, $alpha: .1);
             padding: 0 .38rem;
             margin-bottom: .2rem;
+        }
+        .memberBox{
+            position: relative;
+            
         }
         .openCheck{
             padding: 10px;
@@ -57,7 +98,7 @@
                 background: #C2F7A0; 
             }
             &:first-child {
-                margin-top: .4rem;
+                // margin-top: .4rem;
             }
             
         }
@@ -109,15 +150,17 @@
             height: 1.2rem;
             line-height: 1.2rem;
             margin: 0 .3rem 0 0;
+            align-items: center;
         }
-        .memberList {
-            padding: 0 0 0.2rem;
-            .memberUnit {
-                width: 1.4rem;
+        
+        .memberUnit{
+            // width: 1.4rem;
                 // height: 2rem;
-                margin: .1rem .1rem .1rem;
+                margin: 0.1em 0 0.1rem;
                 display: inline-block;
                 position: relative;
+                width: 25%;
+                vertical-align: text-top;
                 &::after{
                     content: '\20';
                     position: absolute;
@@ -145,6 +188,25 @@
                         line-height: .4rem;
                     }
                 }
+        }
+        .allCheck{
+            width: .4rem;
+            height: .4rem;
+            margin: 0 .11rem 0 0;
+            &::after{
+                left: 0.01rem!important;
+            }
+            &.checked{
+                &::after{
+                    top: -0.01rem!important;
+                    left: -0.03rem!important;
+                }
+            }
+        }
+        .memberList {
+            padding: 0 0 0.2rem;
+            .memberUnit {
+                
                 &.noChoose{
                     &::after{
                         display: none;
@@ -164,7 +226,21 @@
                     font-size: .3rem;
                     line-height: 1.3em;
                 }
-                
+                .memberDefaultBox{
+                    width: 1rem;
+                    height: 1rem;
+                    border-radius: 50%;
+                    background: #3d86f6;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: auto;
+                    .memberDefaultMc{
+                        font-size: .32rem;
+                        color: #fff;
+                        font-weight: 600;
+                    }
+                }
             }
         }
     }
@@ -245,6 +321,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex: 1;
+            .sjqr{
+                border-radius: .66rem 0 0 .66rem;
+                background: #6aa7a1;
+            }
+            .dm{
+                border-radius:  0 .66rem .66rem 0;
+                
+            }
         }
         .mr23{
             margin-right: .23rem;
@@ -278,6 +363,13 @@
         margin-left: .68rem;
     }
 
+}
+.checkBox{
+    &.status_noArrive{
+        &::before{
+            left:.58rem;
+        }
+    }       
 }
 .status_noArrive{
     &::before{
@@ -331,10 +423,21 @@
             .icon{
                 width: .48rem;
                 height: .48rem;
-                background: url(../../styles/images/no_arrive@2x.png) center center no-repeat;
-                background-size: 100%;
+                
                 display: block;
                 margin-right: .2rem;
+                &.noArrive{
+                    background: url(../../styles/images/no_arrive@2x.png) center center no-repeat;
+                    background-size: 100%;
+                }
+                &.arrive{
+                    background: url(../../styles/images/arrive@2x.png) center center no-repeat;
+                    background-size: 100%;
+                }
+                &.leave{
+                    background: url(../../styles/images/leave@2x.png) center center no-repeat;
+                    background-size: 100%;
+                }
             }
             .iconText{
                 color: rgba(0, 0, 0, 0.8);
@@ -374,6 +477,68 @@
                     font-size: .12rem;
                     text-align: center;
                     line-height: .38rem;
+                }
+            }
+        }
+    }
+    .table{
+        .tableHead{
+            display: flex;
+            height: 1.03rem;
+            align-items: center;
+            .headItem{
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                .icon{
+                    width: .48rem;
+                    height: .48rem;
+                    display: block;
+                    &.arrive{
+                        background: url(../../styles/images/arrive@2x.png)center center no-repeat;
+                        background-size: 100%;
+                    }
+                    &.leave{
+                        background: url(../../styles/images/leave@2x.png)center center no-repeat;
+                        background-size: 100%;
+                    }
+                    &.noArrive{
+                        background: url(../../styles/images/no_arrive@2x.png)center center no-repeat;
+                        background-size: 100%;
+                    }
+                }
+                .mc{
+                    font-size: .34rem;
+                    color: rgba(0, 0, 0, 0.8);
+                    font-weight: 500;
+                    margin-left: .11rem;
+                }
+                
+            }
+            
+        }
+        .tableBody{
+            .tableTr{
+                display: flex;
+                height: .82rem;
+                align-items: center;
+                .tableTd{
+                    flex: 1;
+                    display: flex;
+                    justify-content: center;
+                    font-size: .34rem;
+                    color: rgba(0, 0, 0, 0.8);
+                    font-weight: 400;
+                    &:first-child{
+                        font-weight: 500;
+                    }
+                    
+                }
+                &:nth-child(odd){
+                    background: #EEEEEE;
+                }
+                .statusMc{
+                    color: #FFAF5F;
                 }
             }
         }
@@ -464,3 +629,125 @@
     }
 }
 
+.modeBox{
+    min-width: 2.4rem;
+    display: flex;
+    align-items: center;
+    .icon{
+        color: #30827A;
+    }
+    .modeTitle{
+        font-size: .3rem;
+        margin-left: .2rem;
+    }
+}
+.flex{
+    display: flex;
+}
+
+
+// 班主任详情
+.bzrDetailBox{
+    .footItem{
+        justify-content: center;
+        .btnArrive{
+            width: 2.47rem;
+        }
+    }
+    &.hasNoArriveStudent{
+        .paddingBody {
+            padding-top: .96rem;
+        }
+        .tipBox{
+            height: .76rem;
+            background: #FFF5EB;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 0 .31rem;
+            display: flex;
+            align-items: center;
+            .tipTitle{
+                color: #FFAF5F;
+                font-size: .26rem;
+            }
+            .icon{
+                color: #FFAF5F;
+                margin-right: .14rem;
+            }
+        }
+        
+       
+    }
+}
+
+
+.callingRecordBox{
+    .classBox{
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .38rem;
+        .className{
+            font-size: .34rem;
+            color: rgba(0, 0, 0, 0.8);
+            font-weight: 500;
+            position: relative;
+            padding-left: .15rem;
+            &::before{
+                content: '';
+                width: .05rem;
+                height: .28rem;
+                background: #30827A;
+                border-radius: .03rem;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+        .btn{
+            background: #30827A;
+            border-radius: .66rem;
+            border: 0;
+        }
+    }
+    .callingRecord{
+        background: #fff;
+        border-radius: .3rem;
+        padding: .38rem;
+        .recordItem{
+            justify-content: space-between;
+            margin-bottom: .49rem;
+            .mc{
+                font-size: .34rem;
+                color: rgba(0, 0, 0, 0.8);
+            }
+            .btn{
+                font-size: .3rem;
+                color: #30827A;
+                padding: .05rem .19rem;
+                border: 1px solid #30827A;
+                border-radius: .07rem;         
+            }
+            &:last-child{
+                margin-bottom: 0;
+            }
+            .noConfirm{
+                &.btn{
+                    color: rgba(0, 0, 0, 0.2);
+                    border-color: rgba(0, 0, 0, 0.4);
+                }
+            }
+        }
+    }
+}
+.ml20{
+    margin-left: .2rem;
+}
+.pb0{
+    padding-bottom: 0!important;
+}
+.empty{
+    height: 100%;
+}

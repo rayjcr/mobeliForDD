@@ -60,6 +60,22 @@
     .classNum{
         color: rgba(0, 0, 0, 0.4);
     }
+    &.noArriveHead{
+        top: .76rem;
+        
+    }
+    // 教师
+    &.teacherHead{
+        .timePicker{
+            float: none;
+            text-align: center;
+        }
+        .subject{
+            position: absolute;
+            right: 0;
+            top: 0.15rem;
+        }
+    }
 }
 
 .mr20 {
@@ -105,4 +121,7 @@
         font-size: .32rem;
         font-weight: 300;
     }
+}
+.alignCenter{
+    align-items: center;
 }

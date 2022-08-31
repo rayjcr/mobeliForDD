@@ -10,6 +10,14 @@ export async function getToken(params) {
     })
 }
 
+// 钉钉登录
+export async function ddLogin(params) {
+    return request(`${base}/dingding/login`, {
+        method: 'post',
+        params,
+    })
+}
+
 // 获取学年学期列表
 export async function getSemesterList(params) {
     return request(`${base}/pc/yearTerm/list`, {
@@ -52,7 +60,7 @@ export async function getClassStudentByID(params) {
 
 // 根据班级ID查询签到信息
 export async function getTodaySigninBySquadId(params) {
-    return request(`${base}/signin/getTodaySigninBySquadId`, {
+    return request(`${base}/signin/courseteacher/getSigninBySquadId`, {
         method: 'get',
         params,
     })
@@ -66,6 +74,14 @@ export async function saveCall(data) {
     })
 }
 
+
+export async function saveTeacherReason(data) {
+    return request(`${base}/signin/headteacher/reason`, {
+        method: 'post',
+        data,
+    })
+}
+
 // 获取课程批次
 export async function getSubjectSort(data) {
     return request(`${base}/signin/sort`, {
@@ -74,11 +90,26 @@ export async function getSubjectSort(data) {
     })
 }
 
-// 确认签到
+// 确认签到任课教师
 export async function submitCheck(data) {
+    return request(`${base}/signin/submit`, {
+        method: 'post',
+        data,
+    })
+}
+// 班主任签到
+export async function submitCheckBzr(data) {
     return request(`${base}/signin/check`, {
         method: 'post',
         data,
+    })
+}
+
+// 根据用户id获取单条信息（班主任）
+export async function getSigninTeachByUserId(params) {
+    return request(`${base}/signin/headteacher/getSigninByUserId`, {
+        method: 'get',
+        params,
     })
 }
 
@@ -90,6 +121,14 @@ export async function getMyChildren(params) {
     })
 }
 
+// -填写原因（家长）
+export async function saveParentReason(data) {
+    return request(`${base}/signin/parent/reason`, {
+        method: 'post',
+        data,
+    })
+}
+
 // 根据用户id获取单条信息
 export async function getSigninByUserId(params) {
     return request(`${base}/signin/getSigninByUserId`, {
@@ -97,6 +136,23 @@ export async function getSigninByUserId(params) {
         params,
     })
 }
+
+// 根据班级id获取签到信息（班主任）
+export async function getSigninBySquadId(params) {
+    return request(`${base}/signin/headteacher/getSigninBySquadId`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 学生获取签到信息（家长）
+export async function getStudentSignin(params) {
+    return request(`${base}/signin/parent/getStudentSignin`, {
+        method: 'get',
+        params,
+    })
+}
+
 
 // 查询学年学期列表
 export async function getYearTermList(params) {
@@ -187,6 +243,15 @@ export async function getEvalStudentInfo(params) {
 // 获取学生评价列表 by endTime, startTime, userId
 export async function getStudentEval(params) {
     return request(`${base}/evaluate/student`, {
+        method: 'get',
+        params,
+    })
+}
+
+// word转富文本
+
+export async function getHtml(params) {
+    return request(`${base}/pc/zxs/word/getHtml`, {
         method: 'get',
         params,
     })

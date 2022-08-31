@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PermissionHoc from '../../component/PermissionHoc';
@@ -11,16 +11,24 @@ const Transcript = memo(({ app }) => {
   const { userInfo } = app;
   const navigate = useNavigate();
   const pageType = getUrlParams('pageType');  // 入口 成绩单查询：transcript
-  const redirectUrl = DDPageTypeUrl[pageType] 
+  const redirectUrl = DDPageTypeUrl[pageType];
+  
+  const [isTeacher, setIsTeacher] = useState(false)
 
   useEffect(() => {
-    if(userInfo.type!==1 ){
+    if(['report','transcript'].includes(redirectUrl)) {
+      if(userInfo.type!==1){
+        redirectUrl && navigate(`/${redirectUrl}`)
+      }else{
+        setIsTeacher(true);
+      }
+    }else{
       redirectUrl && navigate(`/${redirectUrl}`)
     }
   }, [])
 
   return (
-    userInfo.type ===1 && <TeacherIndex redirectUrl={redirectUrl} />
+    isTeacher && <TeacherIndex redirectUrl={redirectUrl} />
   )
 })
 

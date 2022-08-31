@@ -1,89 +1,152 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect,useImperativeHandle, useRef,forwardRef } from 'react';
 import css from './component.module.scss';
 import { Popup, Calendar,PickerView } from 'antd-mobile';
 import { DownOutline, CalendarOutline } from 'antd-mobile-icons';
-import _ from 'lodash';
+import {getYearTime} from '../styles/common.js'
+import { useDebounce } from '../utils/tools';
+import _, { conformsTo } from 'lodash';
+import moment from 'moment';
+// import dayjs from 'dayjs'
 
-const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSubject,currentTime,currStudent,weekList,currentWeek }) => {
+const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList,currentSubjectIndex,currentTime,weekList,currentWeekIndex,type,hasNoArriveStudent,time,childList,currentChildIndex },LogModalRef) => {
   const [classListPicker,setClassListPicker] = useState(false)
   const [dataPicker, setDataPicker] = useState(false);
   const [selectIndex, setSelectIndex] = useState(0);
-  const [selectSubjectIndex,setSubject] = useState(0);
+  const [selectSubjectIndex,setSelectSubjectIndex] = useState(0);
   const [subjectPicker, setSubjectPicker] = useState(false);
+  const [subjectValue,setSubjectValue] = useState('')
   const [weekPicker,setWeekPicker] = useState(false)
   const [selectWeekIndex,setSelectWeekIndex] = useState(0)
   const [curTime,setCurTime] = useState(null)
-  const onChangeClass = (e)=>{
-      if(classList[selectIndex].value===e[0]){
-        return
-      } else {
-        currentClass(e[0]);
-        setSelectIndex(_.findIndex(classList,{value: e[0]}));
-      }
-  }
-  
-  const onChangeSubject = (e)=>{
-    if(subjectList[selectSubjectIndex].value===e[0]){
-      return
-    } else {
-      console.log(e[0],1111)
-      currentSubject(e[0]);
-      setSubject(_.findIndex(subjectList,{value: e[0]}));
-      
+  const [dataPickerValue,setDataPickerValue] = useState(null)
+  const [childPicker,setChildPicker] = useState(false)
+  const [childPickerIndex,setChildPickerIndex] = useState(0)
+  const timeRef = useRef(null)
+  const subjectRef = useRef(null)
+  const onChangeClass = useDebounce((e)=>{
+    let changeIndex = _.findIndex(classList, {'value':e[0]})
+    if(selectIndex===changeIndex) return
+    else{
+        currentClassIndex(changeIndex)
+        setSelectIndex(changeIndex)
     }
+  },600)
+  const onChangeSubject = useDebounce((e)=>{
+    
+    let changeIndex = _.findIndex(subjectList, {'value':e[0]})
+    console.log(changeIndex,selectSubjectIndex)
+    if(selectSubjectIndex===changeIndex) return
+    else{
+    //  这边怎么判断手动点还是自动设置呢
+      if(subjectRef.current == 1){
+        currentSubjectIndex(selectSubjectIndex)
+        setSelectSubjectIndex(selectSubjectIndex)
+        setSubjectValue([subjectList[selectSubjectIndex].value])
+        subjectRef.current = 2
+      }else{
+        currentSubjectIndex(changeIndex)
+        setSelectSubjectIndex(changeIndex)
+        setSubjectValue(e)
+      }
+     
+    }
+  },600)
+
+  const onChangeWeek = useDebounce((e)=>{
+    let changeIndex = _.findIndex(weekList, {'value':e[0]})
+    if(selectWeekIndex===changeIndex) return
+    else{
+      currentWeekIndex(changeIndex)
+      setSelectWeekIndex(changeIndex)
+    }
+  },600)
+
+  const onChangeChild = useDebounce((e)=>{
+    let changeIndex = _.findIndex(childList, {'value':e[0]})
+    if(childPickerIndex===changeIndex) return
+    else{
+      currentChildIndex(changeIndex)
+      setChildPickerIndex(changeIndex)
+    }
+  },600)
+  
+  
+
+  const changeSubject = (changeIndex)=>{
+    if(!subjectRef.current){
+      setSelectSubjectIndex(changeIndex)
+    }
+    subjectRef.current = subjectRef.current ? subjectRef.current : 1
+  }
+  const changeTimeData = (time)=>{
+    if(!timeRef.current){
+      setCurTime(time)
+      setDataPickerValue(moment(time).format('YYYY-MM-DD'))
+    }
+    
   }
 
-  const onChangeWeek = (e)=>{
-    if(weekList[selectWeekIndex].value===e[0]){
-      return
-    } else {
-      let info = weekList.filter(item=>item.id == e[0])
-      currentWeek(info[0]);
-      setSelectWeekIndex(_.findIndex(weekList,{value: e[0]}));
-      
-    }
-  }
   useEffect(() => {
-    // setSelectClass(_.find(classList,{}))
+    
+    setCurTime(getYearTime())
   }, [])
   
+  useImperativeHandle(LogModalRef, () => ({
+    changeSubject,
+    changeTimeData
+  }));
+
   return (
     <>
      {/* 任课教师 */}
-      {classList &&classList.length>0 && <div className={css.classHead}>
-            <div className={css.className} onClick={()=>setClassListPicker(true)}>
-              <span className={css.name}>{classList[selectIndex].label}</span>
-              <span className={css.classNum}> ( {classList[selectIndex].classNum||0} ) </span>
-              <DownOutline fontSize={14} color='#666' fontWeight={700}/>
-            </div>  
-       
+        <div className={[css.classHead,(hasNoArriveStudent ? css.noArriveHead : ''),(userInfo && userInfo.type === 1 && type!=='bzr' ? css.teacherHead : '')].join(' ')}>
+
+              {   classList &&classList.length>0 &&
+                  <div className={css.className} onClick={()=>setClassListPicker(true)}>
+                    <span className={css.name}>{classList[selectIndex].label}</span>
+                    <span className={css.classNum}> ( {classList[selectIndex].studentCount||0} ) </span>
+                    <DownOutline fontSize={14} color='#666' fontWeight={700}/>
+                  </div>  
+              }
+              {/* 班主任时间显示 */}
+              {
+                time && 
+                <div className={css.className}>
+                  <span className={css.name}>{time}</span>
+                </div>
+              }
+
               {/* 身份 type 1 教师 2 学生 3 家长 */}
-              {userInfo && userInfo.type == 1 ? <div className={css.timePicker} onClick={()=>setDataPicker(true)}><CalendarOutline /> {curTime || '今日'}</div> : ''}
+              {!type && userInfo && userInfo.type === 1 ? <div className={css.timePicker} onClick={()=>setDataPicker(true)}><CalendarOutline /> {curTime} <DownOutline fontSize={14} color='#30827A' fontWeight={700}/></div> : ''}
               
               {/* 多学科显示 切换 */}
               {
-                subjectList &&subjectList.length > 0 && <div className={[css.timePicker,css.mr20].join(' ')} onClick={()=>setSubjectPicker(true)}>
+                !type && subjectList &&subjectList.length > 1 && <div className={[css.timePicker,css.mr20,css.subject].join(' ')} onClick={()=>setSubjectPicker(true)}>
                   <span className={css.name}>{subjectList[selectSubjectIndex].label}</span>
                   <DownOutline fontSize={14} color='#666' fontWeight={700}/>
                 </div>
               }
-        
+
+              {weekList &&weekList.length > 0 && <div className={css.timePicker} onClick={()=>setWeekPicker(true)}><CalendarOutline /> {weekList[selectWeekIndex].label}</div>} 
+              
+              
         </div>
-      }
+      
       {/* 家长 */}
       {
-        currStudent &&<div className={[css.classHead,css.parentBox].join(' ')}>
-            <div className={css.className}>
-              <img src={currStudent.avatar} className={css.headImg}/>
-              <span className={css.name}>{currStudent.realName}</span>
-              <span className={css.njbj}>{currStudent.squadName}</span>
+        childList&&childList.length>0 &&<div className={[css.classHead,css.parentBox].join(' ')}>
+            <div className={[css.className,css.alignCenter].join(' ')} onClick={()=>setChildPicker(true)}>
+              <img src={childList[childPickerIndex].avatar} className={css.headImg} alt=''/>
+              <span className={css.name}>{childList[childPickerIndex].realName}</span>
+              <span className={css.njbj}>{childList[childPickerIndex].squadName}</span>
+              <DownOutline fontSize={14} color='#666' fontWeight={700}/>
             </div>
+
             {weekList &&weekList.length > 0 && <div className={css.timePicker} onClick={()=>setWeekPicker(true)}><CalendarOutline /> {weekList[selectWeekIndex].label}</div>}
         </div>
       }
        
-      {/* 班主任 */}
-
+      
 
 
 
@@ -101,6 +164,19 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
         />
       </Popup>
       
+
+      <Popup
+        visible={childPicker}
+        onMaskClick={() => {
+          setChildPicker(false)
+        }} >
+        <PickerView
+          columns={[childList]}
+          // renderLabel={item=>item.classAliasName}
+          onChange={onChangeChild}
+        />
+      </Popup>
+
       {/* 切换学科 */}
       <Popup
         visible={subjectPicker}
@@ -109,7 +185,7 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
         }} >
         <PickerView
           columns={[subjectList]}
-          // renderLabel={item=>item.classAliasName}
+          value={subjectValue}
           onChange={onChangeSubject}
         />
       </Popup>
@@ -130,6 +206,8 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
       {/* 选择时间 */}
       <Popup
         visible={dataPicker}
+        
+        // defaultValue={()=>now.Date('2020-03-01')}
         onMaskClick={() => {
           setDataPicker(false)
         }}
@@ -137,14 +215,12 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
       >
          <Calendar
           selectionMode='single'
+          value={dataPickerValue}
           onChange={val => {
-            let time = new Date(val)
-            let year = time.getFullYear()
-            let month = time.getMonth() + 1
-            let day = time.getDate()
-            let curr_time = year + '-' + (month < 10 ? '0' + month : month) +'-' + (day < 10 ? '0' + day : day)
-            currentTime(curr_time)  
-            setCurTime(curr_time)
+            currentTime(moment(val).format('YYYY-MM-DD'))  
+            setCurTime(moment(val).format('YYYY-MM-DD'))
+            setDataPickerValue(val)
+            timeRef.current = moment(val).format('YYYY-MM-DD')
             setDataPicker(false)
           }}
         />
@@ -153,4 +229,15 @@ const ClassHead = memo(({ classList,userInfo,currentClass,subjectList,currentSub
   )
 });
 
+// const ClassHead = forwardRef(({},LogModalRef)=>{
+//   useImperativeHandle(LogModalRef, () => ({
+//     show
+//   }));
+//   const show = ()=>{
+//     console.log('我改了我爱了')
+//   }
+//   return(
+//     <div>12121212121</div>
+//   )
+// })
 export default ClassHead;

@@ -1,9 +1,10 @@
 import { Provider, useDispatch } from 'react-redux';
-import { BrowserRouter, useHref, useLocation, useMatch, useParams } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 import Routers from './router';
+import * as dd from 'dingtalk-jsapi'
 import './App.css';
-import { getBaseTeacherData, getTokenAndUserInfo,getBaseParentData, getSemesterInfo } from './store/appSlice';
+import { getBaseTeacherData, getTokenAndUserInfo,getBaseParentData, getSemesterInfo, setDingdLogin } from './store/appSlice';
 import { createContext, useLayoutEffect, useState, memo } from 'react';
 import { getUrlParams } from './utils/tools';
 
@@ -19,6 +20,19 @@ const Permisson = memo(({ children }) => {
   //     console.log(res)
   //   })
   // }
+  const getCode = () => {
+    return new Promise((resolve, reject) => {
+      dd.ready(() => {
+        dd.runtime.permission.requestAuthCode({
+          corpId: 'ding8256957e471a074d4ac5d6980864d335',
+          onSuccess: info => {
+            console.log(info)
+            resolve(info)
+          }
+        })
+      })
+    })
+  }
 
   // 如果没有userInfo信息调用getUserInfo重新获取数据
   useLayoutEffect(() => {
@@ -31,22 +45,37 @@ const Permisson = memo(({ children }) => {
       type: 'account',
     }
     const getUserInfo = async () => {
-      let res = await dispatch(getTokenAndUserInfo(params));
+      let res = null
+      if(dd.env.platform !== 'notInDingTalk'){
+        let info = await getCode()
+        params = {
+          loginTmpCode: info.code,
+          moduleType: '1'
+        }
+        console.log(params)
+        res = await dispatch(setDingdLogin(params))
+      }else {
+        res = await dispatch(getTokenAndUserInfo(params));
+      }
       sessionStorage.setItem('token',res.access_token);
       setUserInfo(res);
 
       await dispatch(getSemesterInfo())
       // 如果是教师，获取教师相关的基础数据
-      // typeall：1（既是家长 又是老师）
-      if(res.type===1) {
-      //   dispatch(getBaseTeacherData(res));
-      }else if(res.type === 3){
-      //   dispatch(getBaseParentData(res));
+      // typeall：1（既是家长 又是老师
+      console.log(getUrlParams('pageType'), 'window.location.pageType')
+
+      if(!['transcript','report'].includes(getUrlParams('pageType'))) {
+        if(res.type===1) {
+          dispatch(getBaseTeacherData(res));
+        }else if(res.type === 3){
+          dispatch(getBaseParentData(res));
+        }
       }
     }
     !userInfo && getUserInfo();
 
-  }, [dispatch])
+  }, [dispatch, userInfo])
   return <PermissionContext.Provider value={userInfo}>
     {children}
   </PermissionContext.Provider>
