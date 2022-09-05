@@ -31,6 +31,16 @@
         line-height: .7rem;
         font-size: .26rem;
     }
+    .shortDropDown {
+        width: 20%;
+        :global(.dropdownBox) {
+            width: 30%;
+            left: auto;
+            right: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+    }
 }
 
 .classHead {
@@ -129,4 +139,40 @@
 }
 .alignCenter{
     align-items: center;
+}
+.awardHead{
+    .njbj{
+        display: none;
+    }
+    .name{
+        font-weight: 400;
+    }
+    .subject{
+        border: 1px solid #30827A;
+        padding: 0 0.2rem;
+        border-radius: 0.15rem;
+        margin: 0;
+        .name{
+            font-size: .3rem;
+            margin-right: .2rem;
+        }
+    }
+    
+}
+.memberDefaultBox{
+    width: .69rem;
+    height: .69rem;
+    display: block;
+    border-radius: .69rem;
+    margin-right: .13rem!important;
+    background: #3d86f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    .memberDefaultMc{
+        font-size: .2rem;
+        color: #fff;
+        font-weight: 600;
+    }
 }

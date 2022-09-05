@@ -9,7 +9,8 @@ export const DDPageTypeUrl = {
     studyproves: 'studyproves',
     morningCall:'morningCall',
     parent:"parent",
-    bzr:"bzr"
+    bzr:"bzr",
+    dailyResult: 'dailyResult'
 }
 
 export const global = [

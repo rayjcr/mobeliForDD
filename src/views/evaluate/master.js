@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Popup, PickerView, Empty } from 'antd-mobile';
+import { Popup, PickerView } from 'antd-mobile';
 import PermissionHoc from '../../component/PermissionHoc';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DownOutline, TextDeletionOutline } from 'antd-mobile-icons';
@@ -10,7 +10,7 @@ import css from './evaluate.module.scss';
 import moment from 'moment';
 import { useDebounce } from '../../utils/tools';
 import _ from 'lodash';
-
+import Empty from '../../component/empty';
 const EvalMaster = memo(({ app }) => {
   const navigate = useNavigate();
   const { initComplete, teachClassList, userInfo } = app;

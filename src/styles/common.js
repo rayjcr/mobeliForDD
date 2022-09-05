@@ -23,3 +23,7 @@ export const getYearTime = (data,type)=>{
     else return year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)
     
 } 
+
+export default{
+    whiteUrl:['/a','/commonrole','/record','/bzrDetail','/reportdetail']
+}

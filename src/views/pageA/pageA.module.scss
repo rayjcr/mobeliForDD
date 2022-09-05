@@ -4,10 +4,16 @@
 }
 .menu_cell {
   width: 100%;
-  display: flex;
-  // justify-content: space-around;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  .menuList{
+    display: flex;
+    // justify-content: space-around;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    
+  }
+  .menuName{
+    margin-bottom: .2rem;
+  }
   padding: .2rem .32rem;
   .menu_item {
     margin-right: .5rem;

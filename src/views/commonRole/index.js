@@ -13,11 +13,13 @@ const Transcript = memo(({ app }) => {
   const pageType = getUrlParams('pageType');  // 入口 成绩单查询：transcript
   const redirectUrl = DDPageTypeUrl[pageType];
   
+  const person_type = Number(localStorage.getItem('personType'))
   const [isTeacher, setIsTeacher] = useState(false)
 
   useEffect(() => {
     if(['report','transcript'].includes(redirectUrl)) {
-      if(userInfo.type!==1){
+      console.log(userInfo?.type)
+      if(userInfo?.type!==1){
         redirectUrl && navigate(`/${redirectUrl}`)
       }else{
         setIsTeacher(true);

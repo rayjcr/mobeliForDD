@@ -8,6 +8,7 @@ import AwardList from '../views/awardlist';
 import Morning from '../views/morningCall';
 import Attendance from '../views/attendance';
 import Daily from '../views/dailyResult';
+import DailyDetail from '../views/dailyResult/detail';
 import Evaluate from '../views/evaluate';
 import EvalMaster from '../views/evaluate/master';
 import Record from '../views/morningCall/record'
@@ -110,6 +111,12 @@ const Menu = [
         path: '/dailyResult',
         title: 'dailyResult',
         element: <Daily />,
+        isMenu: false,
+    },
+    {
+        path: '/dailyDetail',
+        title: 'DailyDetail',
+        element: <DailyDetail />,
         isMenu: false,
     },
     {

@@ -7,8 +7,8 @@ import { useDebounce } from '../utils/tools';
 import _, { conformsTo } from 'lodash';
 import moment from 'moment';
 // import dayjs from 'dayjs'
-
-const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList,currentSubjectIndex,currentTime,weekList,currentWeekIndex,type,hasNoArriveStudent,time,childList,currentChildIndex },LogModalRef) => {
+import { unstable_batchedUpdates as batchedUpdates} from 'react-dom';
+const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList,currentSubjectIndex,currentTime,weekList,currentWeekIndex,type,hasNoArriveStudent,time,childList,currentChildIndex,childIndex,classNameRef},LogModalRef) => {
   const [classListPicker,setClassListPicker] = useState(false)
   const [dataPicker, setDataPicker] = useState(false);
   const [selectIndex, setSelectIndex] = useState(0);
@@ -23,6 +23,7 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   const [childPickerIndex,setChildPickerIndex] = useState(0)
   const timeRef = useRef(null)
   const subjectRef = useRef(null)
+  const [childValue,setChildValue] = useState([''])
   const onChangeClass = useDebounce((e)=>{
     let changeIndex = _.findIndex(classList, {'value':e[0]})
     if(selectIndex===changeIndex) return
@@ -34,7 +35,6 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   const onChangeSubject = useDebounce((e)=>{
     
     let changeIndex = _.findIndex(subjectList, {'value':e[0]})
-    console.log(changeIndex,selectSubjectIndex)
     if(selectSubjectIndex===changeIndex) return
     else{
     //  这边怎么判断手动点还是自动设置呢
@@ -62,11 +62,16 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   },600)
 
   const onChangeChild = useDebounce((e)=>{
+    
     let changeIndex = _.findIndex(childList, {'value':e[0]})
+    
     if(childPickerIndex===changeIndex) return
     else{
+     
       currentChildIndex(changeIndex)
       setChildPickerIndex(changeIndex)
+      setChildValue([childList[changeIndex].value])
+      
     }
   },600)
   
@@ -85,9 +90,14 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
     }
     
   }
-
   useEffect(() => {
-    
+    if(childIndex){
+      batchedUpdates(()=>{
+        setChildValue([childList[childIndex].value])
+        setChildPickerIndex(childIndex)
+      })
+     
+    } 
     setCurTime(getYearTime())
   }, [])
   
@@ -99,7 +109,7 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   return (
     <>
      {/* 任课教师 */}
-        <div className={[css.classHead,(hasNoArriveStudent ? css.noArriveHead : ''),(userInfo && userInfo.type === 1 && type!=='bzr' ? css.teacherHead : '')].join(' ')}>
+        <div className={[css.classHead,css[classNameRef],(hasNoArriveStudent ? css.noArriveHead : ''),(userInfo && userInfo.type === 1 && type!=='bzr' ? css.teacherHead : '')].join(' ')}>
 
               {   classList &&classList.length>0 &&
                   <div className={css.className} onClick={()=>setClassListPicker(true)}>
@@ -134,14 +144,27 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
       
       {/* 家长 */}
       {
-        childList&&childList.length>0 &&<div className={[css.classHead,css.parentBox].join(' ')}>
+        childList&&childList.length>0 &&<div className={[css.classHead,css.parentBox,css[classNameRef]].join(' ')}>
             <div className={[css.className,css.alignCenter].join(' ')} onClick={()=>setChildPicker(true)}>
-              <img src={childList[childPickerIndex].avatar} className={css.headImg} alt=''/>
+              {
+                !childList[childPickerIndex].isImgErr && <img src={childList[childPickerIndex].avatar} className={css.headImg} alt='' />
+              }
+              {
+                childList[childPickerIndex].isImgErr && 
+                <div className={css.memberDefaultBox}>
+                  <label className={css.memberDefaultMc}>{childList[childPickerIndex].lastTwoName}</label>
+                </div>
+              }
               <span className={css.name}>{childList[childPickerIndex].realName}</span>
               <span className={css.njbj}>{childList[childPickerIndex].squadName}</span>
               <DownOutline fontSize={14} color='#666' fontWeight={700}/>
             </div>
-
+            {
+                subjectList &&subjectList.length > 1 && <div className={[css.timePicker,css.mr20,css.subject].join(' ')} onClick={()=>setSubjectPicker(true)}>
+                  <span className={css.name}>{subjectList[selectSubjectIndex].label}</span>
+                  <DownOutline fontSize={14} color='#666' fontWeight={700}/>
+                </div>
+            }
             {weekList &&weekList.length > 0 && <div className={css.timePicker} onClick={()=>setWeekPicker(true)}><CalendarOutline /> {weekList[selectWeekIndex].label}</div>}
         </div>
       }
@@ -172,6 +195,7 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
         }} >
         <PickerView
           columns={[childList]}
+          value={childValue}
           // renderLabel={item=>item.classAliasName}
           onChange={onChangeChild}
         />

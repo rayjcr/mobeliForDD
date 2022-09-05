@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getToken, getSemesterList, getWeeklyList, getClassListByTeacherID,getClassListSubjectByTeacherID,getMyChildren,getYearTermList,getWeekList, ddLogin } from '../../api/index';
+import { getToken, getSemesterList, getWeeklyList, getClassListByTeacherID,getClassListSubjectByTeacherID,getMyChildren,getYearTermList,getWeekList, ddLogin,getSubjectList } from '../../api/index';
 import { find } from 'lodash';
 // 等同于vuex的功能，app是一个全局切片，根据业务可以拆分出不同的切片
 export const appSlice = createSlice({
@@ -51,7 +51,6 @@ export const getSemesterInfo = params => async (dispatch, getState) => {
             value: item.code,
         }
     })
-    console.log(semesterList, 'semesterList-Slice');
     dispatch(setState({
         semesterList,
         curSemester: {
@@ -87,10 +86,12 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
     let teachClassList = [];
     let subjectList = [];
     let masterClassList = [];
+    let subjectAll = []
     await Promise.all([
         getWeeklyList({ schoolYearAndTermCode: curSemester.code }),
         getClassListByTeacherID({ teacherId: params.user_id,schoolyearAndTermCode:curSemester.code }),
         getClassListSubjectByTeacherID({teacherId: params.user_id,schoolyearAndTermCode:curSemester.code}),
+        getSubjectList(),
     ]).then((res) => {
         weeklyList = res[0].data.data.map(item=>{
             return {
@@ -113,6 +114,13 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
                 value:item.id,
             }
         });
+        subjectAll = res[3].data.data.map(item=>{
+            return{
+                ...item,
+                label: item.name,
+                value: item.code
+            }
+        })
         // 班主任班级
         masterClassList = teachClassList.filter(item=>item.masterUserId == params.user_id)
     })
@@ -123,6 +131,7 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
         teachClassList,
         subjectList,
         masterClassList,
+        subjectAll,
         initComplete: true,
         
     }));
@@ -138,16 +147,23 @@ export const getBaseParentData = params => async (dispatch, getState) => {
   let currTerm = yearTermList && yearTermList.length ? yearTermList[0] : null
   let studentLists = []
   let weekList = []
-  
+  let subjectAll = []
   await Promise.all([
     getMyChildren(),
     getWeekList({schoolYearAndTermCode: currTerm.code}),
+    getSubjectList(),
   ]).then(res=>{
     studentLists = res[0].data.data.map(item=>{
+        let lastTwoName = ''
+        if(item.realName) lastTwoName = item.realName.substring(item.realName.length - 2,item.realName.length)
+        else lastTwoName = item.id.substring(item.id.length - 2,item.id.length)
         return{
             ...item,
             label: item.realName,
-            value: item.id
+            value: item.id,
+            isImgErr:false,//图片是否加载失败
+            lastTwoName,
+            headImg: item.avatar,
         }
     });
     weekList = res[1].data.data.map(item=>{
@@ -157,12 +173,20 @@ export const getBaseParentData = params => async (dispatch, getState) => {
             value: item.id
         }
     })
+    subjectAll = res[2].data.data.map(item=>{
+        return{
+            ...item,
+            label: item.name,
+            value: item.code
+        }
+    })
   })
    dispatch(setState({
         studentLists,
         weeklyList: weekList,
         currTerm,
         weekList,
+        subjectAll,
         initComplete: true,
     }));
 }

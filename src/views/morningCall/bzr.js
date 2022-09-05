@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import PermissionHoc from '../../component/PermissionHoc';
 import css from './morning.module.scss';
 import ClassHead from '../../component/classHead';
-import { Button ,Collapse,Toast,Empty,Dialog} from 'antd-mobile';
+import { Button ,Collapse,Toast,Dialog} from 'antd-mobile';
 import { DownOutline } from 'antd-mobile-icons';
 import {getSigninBySquadId,submitCheckBzr} from '../../api/index'
 import _, { join } from 'lodash';
 import {getWeekStartEndTime,getYearTime} from '../../styles/common.js'
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../component/empty';
 const bzrMorning = memo(({ app, dispatch })=>{
     const {masterClassList, subjectList,userInfo,weeklyList, initComplete} = app
    // masterUserId 跟当前登录人useId匹配上，当前登录人就是班级的班主任

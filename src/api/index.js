@@ -256,3 +256,36 @@ export async function getHtml(params) {
         params,
     })
 }
+
+// 查看奖励数据
+export async function showDataForStudent(params) {
+    return request(`${base}/honor/showDataForStudent`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 查看奖励数据
+export async function showHonorDetail(params) {
+    return request(`${base}/honor/showHonorDetail`, {
+        method: 'get',
+        params,
+    })
+}
+
+
+// 考试信息列表
+export async function getExamList(params) {
+    return request(`${base}/exam/list`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 获取学科列表
+export async function getSubjectList(params) {
+    return request(`${base}/pc/subject/list`, {
+        method: 'get',
+        params,
+    })
+}

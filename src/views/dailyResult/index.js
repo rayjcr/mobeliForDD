@@ -1,17 +1,51 @@
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getExamList } from '../../api/index'
+import DropDownList from '../../component/dropdownlist';
+import PermissionHoc from '../../component/PermissionHoc';
+import css from './dailyResult.module.scss'
 
-class DailyResult extends React.Component{
-    render(){
-        return(
-            <div className='dailyBox'>
-                日常成绩
-            </div>
-        )
+const Daily = memo(({ app, dispatch }) => {
+
+  const { initComplete, curSemester } = app
+
+  const [ examList, setExamList ] = useState([])
+
+  const getExamListFn = async () => {
+    let res = await getExamList({ schoolYearAndTermCode: curSemester.code })
+    console.log(res)
+    setExamList(res.data.data)
+  }
+
+  useEffect(() => {
+    if(initComplete){
+      getExamListFn()
     }
+  }, [initComplete])
+
+  return (
+    <div className={css.pg_view}>
+      <DropDownList></DropDownList>
+      <div className={css.exam}>
+        {
+          examList.map((item, index) => {
+            return (
+              <div className={css.exam_item} key={index}>
+                <div className={css.exam_type}>{item.examTypeName}</div>
+                <span>{ item.examName }</span>
+              </div>
+            )
+          })
+        }
+      </div>
+    </div>
+  )
+})
+
+const mapStateToProps = (state) => {
+  const { app } = state;
+  return { app };
 }
 
-export default function daily(){
-    return(
-        <DailyResult />
-    )
-}
+export default connect(mapStateToProps)(PermissionHoc([1, 3])(Daily))

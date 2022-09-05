@@ -1,4 +1,5 @@
 import fetch from 'axios';
+import { Toast } from 'antd-mobile';
 // import { notification } from "antd";
 // import { success } from './tools';
 // fetch.defaults.timeout = 200;
@@ -63,6 +64,9 @@ service.interceptors.response.use(
         }
     },
     error => {
+        Toast.show({
+            content: error.response.data.msg
+        })
         if(fetch.isCancel(error)) {
             return new Promise(() => {});
         }

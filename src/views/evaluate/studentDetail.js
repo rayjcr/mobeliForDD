@@ -4,12 +4,12 @@ import PermissionHoc from '../../component/PermissionHoc';
 import css from './evaluate.module.scss';
 import { TeamOutline, CalendarOutline } from 'antd-mobile-icons';
 import { useLocation } from 'react-router-dom';
-import { Popup, PickerView, Modal, Empty } from 'antd-mobile';
+import { Popup, PickerView, Modal } from 'antd-mobile';
 import { getStudentEval } from '../../api';
 import { useDebounce } from '../../utils/tools'
 import moment from 'moment';
 import _ from 'lodash';
-
+import Empty from '../../component/empty';
 const StudentEval = memo(({ app }) => {
   const location = useLocation();
   

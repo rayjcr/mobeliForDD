@@ -1,5 +1,6 @@
-import { Provider, useDispatch } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+
+import { Provider, useDispatch, } from 'react-redux';
+import { BrowserRouter,Navigate } from 'react-router-dom';
 import store from './store';
 import Routers from './router';
 import * as dd from 'dingtalk-jsapi'
@@ -7,7 +8,7 @@ import './App.css';
 import { getBaseTeacherData, getTokenAndUserInfo,getBaseParentData, getSemesterInfo, setDingdLogin } from './store/appSlice';
 import { createContext, useLayoutEffect, useState, memo } from 'react';
 import { getUrlParams } from './utils/tools';
-
+import common from './styles/common';
 export const PermissionContext = createContext([]);
 
 const Permisson = memo(({ children }) => {
@@ -58,19 +59,25 @@ const Permisson = memo(({ children }) => {
         res = await dispatch(getTokenAndUserInfo(params));
       }
       sessionStorage.setItem('token',res.access_token);
+
+      
+
       setUserInfo(res);
 
       await dispatch(getSemesterInfo())
       // 如果是教师，获取教师相关的基础数据
       // typeall：1（既是家长 又是老师
-      console.log(getUrlParams('pageType'), 'window.location.pageType')
-
+      const person_type = localStorage.getItem('personType')
       if(!['transcript','report'].includes(getUrlParams('pageType'))) {
-        if(res.type===1) {
-          dispatch(getBaseTeacherData(res));
-        }else if(res.type === 3){
-          dispatch(getBaseParentData(res));
-        }
+
+        //  if(res.typeall!=1 || ((common.whiteUrl.indexOf(path) > -1) && res.typeall == 1)){
+            if(person_type == 1) {
+              dispatch(getBaseTeacherData(res));
+            }else if(person_type == 3){
+              dispatch(getBaseParentData(res));
+            }
+        //  }
+        
       }
     }
     !userInfo && getUserInfo();
@@ -82,15 +89,16 @@ const Permisson = memo(({ children }) => {
 })
 
 
-
-
 function App() {
+
+  
+
   return (
     <Provider store={store}>
       {/* 这里可以嵌套其他provider例如权限组件Permission,如果使用use-query也嵌套在此 */}
       <Permisson>
-        <BrowserRouter>
-          <Routers />
+        <BrowserRouter >
+            <Routers />
         </BrowserRouter>
       </Permisson>
     </Provider>

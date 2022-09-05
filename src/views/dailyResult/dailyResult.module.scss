@@ -1,0 +1,139 @@
+.pg_view {
+  width: 100%;
+  height: 100%;
+  padding-top: 1rem;
+}
+.exam {
+  width: 100%;
+  padding: .4rem .34rem;
+  .exam_item {
+    width: 100%;
+    min-height: 1.94rem;
+    border-radius: .2rem;
+    background: url('../../styles/images/report-item-bg-icon.png') no-repeat;
+    background-color: #30827A;
+    background-size: 1.2rem 1.2rem;
+    background-position: right .3rem top .32rem;
+    margin-bottom: .4rem;
+    padding: .83rem .48rem .28rem .28rem;
+    font-size: .4rem;
+    color: rgba(255, 255, 255, .8);
+    line-height: .4rem;
+    text-align: center;
+    position: relative;
+    .exam_type {
+      width: 1.58rem;
+      height: .64rem;
+      background: linear-gradient(to bottom, #C7BC9F 0%, #E9D39B 100%);
+      border-radius: .2rem 0 .2rem 0;
+      text-align: center;
+      font-size: .32rem;
+      color: #FFFFFF;
+      line-height: .64rem;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+}
+.examInfo {
+  width: 100%;
+  padding: .4rem .34rem;
+  .exam_cell {
+    background: #FFFFFF;
+    border-radius: .2rem;
+    overflow: hidden;
+    .exam_top {
+      width: 100%;
+      height: 1.2rem;
+      background: linear-gradient(to left bottom, #2C5B5B 34.07%, #4F8484 101.56%); 
+      padding: 0 .34rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .namePhoto {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: .72rem;
+          height: .72rem;
+          border-radius: 50%;
+          margin-right: .14rem;
+        }
+        span {
+          font-size: .4rem;
+          line-height: .4rem;
+          color: #FFFFFF;
+        }
+      }
+      .className {
+        font-size: .32rem;
+        line-height: .32rem;
+        color: #FFFFFF;
+      }
+    }
+    .exam_body {
+      padding: .32rem;
+    }
+  }
+}
+
+.comTable {
+  .table {
+    width: 100%;
+    border-top: .02rem solid #DFDFDF;
+    border-left: .02rem solid #DFDFDF;
+    tr {
+      display: flex;
+      td {
+        flex: 1;
+        height: .8rem;
+        line-height: .8rem;
+        font-size: .3rem;
+        text-align: center;
+        color: rgba(0, 0, 0, .8);
+        border-right: .02rem solid #DFDFDF;
+        border-bottom: .02rem solid #DFDFDF;
+      }
+    }
+    .thead {
+      tr th {
+        flex: 1;
+        height: .8rem;
+        line-height: .8rem;
+        font-size: .3rem;
+        color: rgba(0, 0, 0, .8);
+        border-right: .02rem solid #DFDFDF;
+        border-bottom: .02rem solid #DFDFDF;
+        font-weight: 500;
+        background: #F0ECEA;
+      }
+    }
+  }
+}
+.cell {
+  width: 100%;
+  margin-bottom: .24rem;
+  .cell_title {
+    font-size: .36rem;
+    line-height: .36rem;
+    color: rgba(0, 0, 0, .8);
+    padding: .32rem 0;
+  }
+}
+.tip {
+  font-size: .28rem;
+  line-height: .28rem;
+  color:rgba(0, 0, 0, .4);
+  display: flex;
+  justify-content: space-between;
+  margin-top: .24rem;
+}
+.mb8 {
+  margin-bottom: .16rem;
+}
+.echart_cell {
+  width: 100%;
+  height: 4.2rem;
+}

@@ -10,7 +10,7 @@ import _, { join } from 'lodash';
 import {getYearTime} from '../../styles/common.js'
 import { useNavigate,useSearchParams } from 'react-router-dom';
 import { useDebounce } from '../../utils/tools';
-
+import Empty from '../../component/empty';
 const Morning = memo(({ app })=>{
   const {teachClassList,subjectList, userInfo, initComplete} = app
   const [curState, setCurStatus] = useState(0) //0 未点名 1正在点名 2点名结束
@@ -62,6 +62,8 @@ const Morning = memo(({ app })=>{
   const sortRef = useRef(1);
   const headRef = useRef(null)
   const subjectRef = useRef(null);
+  const roleType = sessionStorage.getItem('type')
+
 
   const checkStudent = (name,index) => {
       studentList[name][index].checked = !studentList[name][index].checked
@@ -309,8 +311,10 @@ const Morning = memo(({ app })=>{
     if(initComplete){
       // 切换时间班级学科重置sort
       // console.log('看看时间变化后这里会不会进来1111----------------------------------------')
-      if(sort) setParamsFromUrl({...paramsFromUrl,sort:null})
-      getInit();
+      if(!roleType || roleType == 1){
+        if(sort) setParamsFromUrl({...paramsFromUrl,sort:null})
+        getInit();
+      }
     }
   }, [initComplete,curTime,selectIndex,subjectIndex])
 
@@ -353,71 +357,76 @@ const Morning = memo(({ app })=>{
     isAllcheck,
     setIsAllCheck,
   }
-  return(
-    /***
-     * 任课教师:
-     * 点名(未点名，第一次进入)
-     * 未到签到(正在点名)
-     * 确认考勤 点名(点名结束)
-     * 切换班级/时间 在点名前
-     * 已请假不可操作 任课教师
-     */
-    <div className={css.container}>
-      <ClassHead ref={headRef} userInfo={userInfo} subjectList={subject} currentTime={(time)=>setCurTime(time)} currentSubjectIndex={(data)=>{setSubjectIndex(data);} } changeSubjectIndex={subjectIndex}/>
-      <div className={[css.paddingBody, curState !== 1 ? css.noCall : '' ].join(' ')}>
-          {isSubmit && <div className={[css.successStatus,'iconfont','icon-yiqueren'].join(' ')}></div>}
-          <div className={css.changeTimeReacod}>
-          { 
-            teachClassList[selectIndex] && 
-            <div className={css.classList} onClick={()=>teachClassList.length > 1 ? setClassListPicker(true) : {}}>
-              <label className={css.mc}>{teachClassList[selectIndex].dingNick || teachClassList[selectIndex].squadName}</label>
-              <label className={css.num}> ( {teachClassList[selectIndex].studentCount || 0} ) </label>
-              {teachClassList.length > 1 && <DownOutline fontSize={14} color='#D9D9D9' fontWeight={700}/>}
+  if(!roleType || roleType == 1){
+    return(
+      /***
+       * 任课教师:
+       * 点名(未点名，第一次进入)
+       * 未到签到(正在点名)
+       * 确认考勤 点名(点名结束)
+       * 切换班级/时间 在点名前
+       * 已请假不可操作 任课教师
+       */
+      <div className={css.container}>
+        <ClassHead ref={headRef} userInfo={userInfo} subjectList={subject} currentTime={(time)=>setCurTime(time)} currentSubjectIndex={(data)=>{setSubjectIndex(data);} } changeSubjectIndex={subjectIndex}/>
+        <div className={[css.paddingBody, curState !== 1 ? css.noCall : '' ].join(' ')}>
+            {isSubmit && <div className={[css.successStatus,'iconfont','icon-yiqueren'].join(' ')}></div>}
+            <div className={css.changeTimeReacod}>
+            { 
+              teachClassList[selectIndex] && 
+              <div className={css.classList} onClick={()=>teachClassList.length > 1 ? setClassListPicker(true) : {}}>
+                <label className={css.mc}>{teachClassList[selectIndex].dingNick || teachClassList[selectIndex].squadName}</label>
+                <label className={css.num}> ( {teachClassList[selectIndex].studentCount || 0} ) </label>
+                {teachClassList.length > 1 && <DownOutline fontSize={14} color='#D9D9D9' fontWeight={700}/>}
+              </div>
+            }
+              {
+                curState !== 1 &&
+                <div className={css.record} onClick={()=>toDetail()}>
+                    <span className={[css.icon,'iconfont','icon-jilu'].join(' ')}></span>
+                    <label className={css.mc}>点名记录</label>
+                </div>
+              }
+              {
+                curState === 1 &&
+                <div className={css.record} onClick={()=>exitCalling()}>
+                    <span className={[css.icon,'iconfont','icon-tuichu'].join(' ')}></span>
+                    <label className={css.mc}>退出点名</label>
+                </div>
+              }
             </div>
-          }
-            {
-              curState !== 1 &&
-              <div className={css.record} onClick={()=>toDetail()}>
-                  <span className={[css.icon,'iconfont','icon-jilu'].join(' ')}></span>
-                  <label className={css.mc}>点名记录</label>
-              </div>
-            }
-            {
-              curState === 1 &&
-              <div className={css.record} onClick={()=>exitCalling()}>
-                  <span className={[css.icon,'iconfont','icon-tuichu'].join(' ')}></span>
-                  <label className={css.mc}>退出点名</label>
-              </div>
-            }
-          </div>
-          <div className={css.memberBox}>
-            
-            <CollItem statusName="未点名" collapseKey={collapseKey} setCollapseKey={setCollapseKey} {...studentProps} isShowAllCheck={true} name="noCheck" active={studentList['noCheck'] && studentList['noCheck'].length > 0 ? ['1']:[]} arriveStu={checkStudent}/>
-          </div>
-          <div className={[css.memberStatus]}>
-            <CollItem statusName="已请假" collapseKey={collapseKeyForLeave} setCollapseKey={setCollapseKeyForLeave} {...studentProps} name="leave" disable/>
-          </div>
-          <div className={css.memberStatus}>
-            <CollItem statusName="未到" collapseKey={collapseKeyForNoArrive} setCollapseKey={setCollapseKeyForNoArrive} {...studentProps} name="noArrive" arriveStu={checkStudent}/>
-          </div>  
-          <div className={css.memberStatus}>
-            <CollItem statusName="已签到" collapseKey={collapseKeyForArrive} setCollapseKey={setCollapseKeyForArrive} {...studentProps} name="arrive"  arriveStu={checkStudent}/>
-          </div>              
+            <div className={css.memberBox}>
+              
+              <CollItem statusName="未点名" collapseKey={collapseKey} setCollapseKey={setCollapseKey} {...studentProps} isShowAllCheck={true} name="noCheck" active={studentList['noCheck'] && studentList['noCheck'].length > 0 ? ['1']:[]} arriveStu={checkStudent}/>
+            </div>
+            <div className={[css.memberStatus]}>
+              <CollItem statusName="已请假" collapseKey={collapseKeyForLeave} setCollapseKey={setCollapseKeyForLeave} {...studentProps} name="leave" disable/>
+            </div>
+            <div className={css.memberStatus}>
+              <CollItem statusName="未到" collapseKey={collapseKeyForNoArrive} setCollapseKey={setCollapseKeyForNoArrive} {...studentProps} name="noArrive" arriveStu={checkStudent}/>
+            </div>  
+            <div className={css.memberStatus}>
+              <CollItem statusName="已签到" collapseKey={collapseKeyForArrive} setCollapseKey={setCollapseKeyForArrive} {...studentProps} name="arrive"  arriveStu={checkStudent}/>
+            </div>              
+        </div>
+        <Footer {...footProps} />
+        <Popup
+          visible={classListPicker}
+          onMaskClick={() => {
+            setClassListPicker(false)
+          }} >
+          <PickerView
+            columns={[teachClassList]}
+            value={teachClassListValue}
+            onChange={onChangeTeachClass}
+          />
+        </Popup>
       </div>
-      <Footer {...footProps} />
-      <Popup
-        visible={classListPicker}
-        onMaskClick={() => {
-          setClassListPicker(false)
-        }} >
-        <PickerView
-          columns={[teachClassList]}
-          value={teachClassListValue}
-          onChange={onChangeTeachClass}
-        />
-      </Popup>
-    </div>
-  )
+    )
+   }else{
+    // 家长进入查看
+    return <Empty className={css.empty} description='暂无权限，请使用教师身份操作'/>
+  }
 })
 
 
@@ -532,4 +541,4 @@ const mapStateToProps = (state) => {
   const { app } = state;
   return { app };
 }
-export default connect(mapStateToProps)(PermissionHoc([1,2,3])(Morning))
+export default connect(mapStateToProps)(PermissionHoc([1])(Morning))

@@ -1,16 +1,17 @@
 import React, { memo, useState, useEffect } from 'react';
 import css from './morning.module.scss';
 import ClassHead from '../../component/classHead';
-import { Button ,Collapse,Toast,Popup,Radio, Space,TextArea,SpinLoading,Result,Form,Empty} from 'antd-mobile';
+import { Button ,Collapse,Toast,Popup,Radio, Space,TextArea,SpinLoading,Result,Form} from 'antd-mobile';
 import { DownOutline } from 'antd-mobile-icons';
 import {getStudentSignin,saveParentReason} from '../../api/index'
 import _, { forEach } from 'lodash';
 import {getWeekStartEndTime,getYearTime} from '../../styles/common.js'
 import { connect } from 'react-redux';
 import PermissionHoc from '../../component/PermissionHoc';
-
+import Empty from '../../component/empty';
 const parentMorning = memo(({ app, dispatch })=>{
     const {studentLists, userInfo,currTerm,weekList, initComplete} = app
+    
     const [currPerson,setCurrPerson] = useState(0)
     const [studentList,setStudentList] = useState([])
     const [reasonVisible,setResonVisible] = useState(false)
@@ -21,6 +22,9 @@ const parentMorning = memo(({ app, dispatch })=>{
     const [reasonVis,setReasonVis] = useState(true)
     const [currWeek,setCurrWeek] = useState(0)
     const [saveStatus,setSaveStatus] = useState(null)
+    const roleType = sessionStorage.getItem('type')
+    
+
     const getInfo = async()=>{
         let data = studentLists[currPerson]
         let week = weekList[currWeek]
@@ -90,7 +94,7 @@ const parentMorning = memo(({ app, dispatch })=>{
     }
     useEffect(() => {
         if(initComplete){
-            getInfo()
+            if(!roleType || roleType == 3) getInfo()
         }
       }, [initComplete,currWeek,currPerson])
     
@@ -142,24 +146,29 @@ const parentMorning = memo(({ app, dispatch })=>{
         const popProps = {
             reasonVisible,reasonVis,loading,reasonValue,reason,setReason,submit,saveStatus,cancel,setReasonValue
         }
-    return(
-        <div className={css.container}>
-            <ClassHead childList={studentLists} weekList={weekList} currentWeekIndex={(val)=>setCurrWeek(val)} currentChildIndex={(val)=>setCurrPerson(val)}/>
-            <div className={[css.paddingBody,css.pb0].join(' ')}>
-                {
-                    studentList.length > 0 && studentList.map(item=>{
-                        return(
-                            <CollapseItem key={item.time} studentList={item} collToReason={collToReason} />
-                        )
-                    })
-                }
-                {
-                    studentList.length == 0 && <Empty className={css.empty} description='暂无数据'/>
-                }
+    if(!roleType || roleType == 3){
+        return(
+            <div className={css.container}>
+                <ClassHead childList={studentLists} weekList={weekList} currentWeekIndex={(val)=>setCurrWeek(val)} currentChildIndex={(val)=>setCurrPerson(val)}/>
+                <div className={[css.paddingBody,css.pb0].join(' ')}>
+                    {
+                        studentList.length > 0 && studentList.map(item=>{
+                            return(
+                                <CollapseItem key={item.time} studentList={item} collToReason={collToReason} />
+                            )
+                        })
+                    }
+                    {
+                        studentList.length == 0 && <Empty className={css.empty} description='暂无数据'/>
+                    }
+                </div>
+                <PopItem {...popProps}/>
             </div>
-            <PopItem {...popProps}/>
-        </div>
-    )
+        )
+    }else{
+        // 教师进入查看
+        return <Empty className={css.empty} description='暂无权限，请使用家长身份操作'/>
+    }
 })
 
 export const PopItem = ({reasonVisible,reasonVis,loading,reasonValue,reason,setReason,submit,saveStatus,cancel,setReasonValue})=>{
