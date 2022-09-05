@@ -36,7 +36,8 @@ const Report = memo(({ app }) => {
       height: []
     }
     physicalList.forEach(item => {
-      seriesObj.xAxis.push(item.termName)
+      let termNameList = item.termName ? item.termName.split("学年") : []
+      seriesObj.xAxis.push(termNameList[0] + (termNameList[1] ? `\n ${termNameList[1]}` : ``))
       seriesObj.weight.push(item.weight)
       seriesObj.height.push(item.height)
     });
@@ -73,8 +74,10 @@ const Report = memo(({ app }) => {
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            axisLine:{
-                show: false,
+            axisLabel:{
+              rotate: 30,
+              margin: 30,
+              align: 'center'
             },
             data: seriesObj.xAxis
           }
@@ -121,20 +124,20 @@ const Report = memo(({ app }) => {
 
   return (
     <div className={css.container}>
+      <div className={css.reportHead}>
+        <img src={require('../../styles/images/face.png')} />
+        <div className={css.reportStuName}>{studentInfo.studentName}</div>
+        <div className={css.reportClassName}>{studentInfo.className}</div>
+      </div>
         <div className={css.reportBody}>
             <div className={css.part_tit}>
                 我的报告单
             </div>
             { sourseData.reportList.map((item, index) => {
                 return <div className={css.part_report} key={`report${index}`}>
-                  <div className={css.report_name}>
-                    <img src={require('../../styles/images/face.png')} />
-                    <span>{studentInfo.studentName}</span>
-                  </div>
                   <div className={css.report_term}>{item.termName}</div>
                   <div className={css.report_title}>{item.fileName}</div>
                   <div className={css.report_btn} onClick={() => clickHandle(item)}>立即查看</div>
-                  <div className={css.report_file}>PDF</div>
               </div>
               })
             }
