@@ -5,12 +5,14 @@ import html2canvas from 'html2canvas';
 import PermissionHoc from '../../component/PermissionHoc';
 
 import DropDownList from '../../component/dropdownlist';
+import ClassHead from '../../component/classHead'
 import css from './transcript.module.scss';
 import * as api from '../../api/index';
 
 const Transcript = memo(({ app }) => {
-  const { semesterList=[], userInfo={} } = app;
+  const { semesterList=[], userInfo={}, studentLists = [], curSemester = {} } = app;
   const [selectIndex, setSelectIndex] = useState(-1);
+  const [currPerson,setCurrPerson] = useState(0)
   const { state: studentInfo={} } = useLocation()
   const [ sourseData, setSourseData ] = useState({
     courseTable: [],
@@ -20,6 +22,7 @@ const Transcript = memo(({ app }) => {
     otherScore: 0,
     historyOtherScore: 0,
     honorTag: [],
+    studentData: {}
   })
   
 
@@ -32,9 +35,25 @@ const Transcript = memo(({ app }) => {
   }
 
   const getTranscriptInfo = async() => {
-    const termInfo = semesterList[selectIndex]
+    let studentData = {}
+    let semesterIndex
+    if(userInfo.type === 1){
+      semesterIndex = selectIndex
+      studentData = studentInfo
+    }else {
+      const studentItem = studentLists[currPerson]
+      semesterIndex = curSemester.defaultSemesterIndex
+      studentData = {
+        studentCode: studentItem?.code, 
+        studentName: studentItem?.realName,
+        className: studentItem?.squadName,
+      }
+    }
+
+    const termInfo = semesterList[semesterIndex]
+
     let data = {
-      studentCode: studentInfo.studentCode,
+      studentCode: studentData?.studentCode,
       term: termInfo.term,
       year: termInfo.year
     }
@@ -69,17 +88,21 @@ const Transcript = memo(({ app }) => {
       totalScore,
       otherScore,
       historyOtherScore,
-      honorTag
+      honorTag,
+      studentData
     })
   }
 
   useEffect(() => {
-    console.log(selectIndex, studentInfo.studentCode)
-    if(studentInfo && studentInfo.studentCode){
-      studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
-      selectIndex> -1 && getTranscriptInfo()
+    if(userInfo.type === 1){
+      if(studentInfo && studentInfo.studentCode){
+        studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
+        selectIndex> -1 && getTranscriptInfo()
+      }
+    }else {
+      getTranscriptInfo()
     }
-  }, [studentInfo, selectIndex])
+  }, [studentInfo, selectIndex, currPerson])
 
   const printElement = useRef();
   const clickSure = async () => {
@@ -97,13 +120,19 @@ const Transcript = memo(({ app }) => {
 
   return (
     <div className={css.container}>
-        <DropDownList {...dropListProps} disable={userInfo.type ===1}></DropDownList>
+        {
+          userInfo.type === 1 ? <DropDownList {...dropListProps} disable={userInfo.type ===1}></DropDownList> : <></>
+        }
+        {
+          userInfo.type === 3 ? <ClassHead childList={studentLists} currentChildIndex={(val)=>setCurrPerson(val)}/> : <></>
+        }
+        
         <div className={css.transcriptBox} ref={printElement}>
           <div className={css.transTable}>
             <div className={css.transHead}>
               <img src={require('../../styles/images/face.png')} />
-              <div className={css.transStuName}>{studentInfo.studentName}</div>
-              <div className={css.transClassName}>{studentInfo.className}</div>
+              <div className={css.transStuName}>{sourseData.studentData?.studentName}</div>
+              <div className={css.transClassName}>{sourseData.studentData?.className}</div>
             </div>
             <div className={css.transBody}>
               <table cellPadding={0} cellSpacing={0}>
