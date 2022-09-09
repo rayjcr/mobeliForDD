@@ -2,25 +2,45 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PermissionHoc from '../../component/PermissionHoc';
+import ClassHead from '../../component/classHead'
 import css from './report.module.scss';
 import Echart from '../../common/echarts';
 import * as api from '../../api/index';
 
 
 const Report = memo(({ app }) => {
-  const { semesterList=[] } = app;
+  const { semesterList=[], userInfo={}, studentLists = [], curSemester = {} } = app;
   const navigate = useNavigate();
   const [selectIndex, setSelectIndex] = useState(-1);
+  const [currPerson,setCurrPerson] = useState(0)
   const { state: studentInfo={} } = useLocation()
   const [ sourseData, setSourseData ] = useState({
     reportList: [],
-    lineProps: {}
+    lineProps: {},
+    studentData: {}
   })
 
   const getReportInfo = async () => {
-    const termInfo = semesterList[selectIndex]
+    let studentData = {}
+    let semesterIndex
+    if(userInfo.type === 1){
+      semesterIndex = selectIndex
+      studentData = studentInfo
+    }else {
+      const studentItem = studentLists[currPerson]
+      console.log(studentItem)
+      semesterIndex = curSemester.defaultSemesterIndex
+      studentData = {
+        studentCode: studentItem?.studentCode, 
+        studentName: studentItem?.realName,
+        className: studentItem?.squadName,
+      }
+    }
+    
+    const termInfo = semesterList[semesterIndex]
+
     const data = {
-      studentCode: studentInfo.studentCode,
+      studentCode: studentData?.studentCode,
       term: termInfo.term,
       year: termInfo.year
     }
@@ -108,7 +128,8 @@ const Report = memo(({ app }) => {
     }
     setSourseData({
       reportList,
-      lineProps
+      lineProps,
+      studentData
     })
   }
   const clickHandle = async (item) => {
@@ -116,18 +137,25 @@ const Report = memo(({ app }) => {
   }
 
   useEffect(() => {
-    if(studentInfo && studentInfo.studentCode){
-      studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
-      selectIndex> -1 && getReportInfo()
+    if(userInfo.type === 1){
+      if(studentInfo && studentInfo.studentCode){
+        studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
+        selectIndex> -1 && getReportInfo()
+      }
+    }else {
+      getReportInfo()
     }
-  }, [studentInfo, selectIndex])
+  }, [studentInfo, selectIndex, currPerson])
 
   return (
     <div className={css.container}>
+      {
+        userInfo.type === 3 ? <ClassHead childList={studentLists} currentChildIndex={(val)=>setCurrPerson(val)}/> : <></>
+      }
       <div className={css.reportHead}>
         <img src={require('../../styles/images/face.png')} />
-        <div className={css.reportStuName}>{studentInfo.studentName}</div>
-        <div className={css.reportClassName}>{studentInfo.className}</div>
+        <div className={css.reportStuName}>{sourseData.studentData?.studentName}</div>
+        <div className={css.reportClassName}>{sourseData.studentData?.className}</div>
       </div>
         <div className={css.reportBody}>
             <div className={css.part_tit}>

@@ -6,6 +6,7 @@ import PermissionHoc from '../../component/PermissionHoc';
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
 import DropDownList from '../../component/dropdownlist';
+import ClassHead from '../../component/classHead'
 import css from './transcript.module.scss';
 import * as api from '../../api/index';
 import { Popup, PickerView } from 'antd-mobile';
@@ -13,8 +14,9 @@ import { useDebounce } from '../../utils/tools';
 import { DownOutline } from 'antd-mobile-icons';
 import _ from 'lodash';
 const Transcript = memo(({ app }) => {
-  const { semesterList=[], userInfo={},studentLists,initComplete } = app;
-  const [selectIndex, setSelectIndex] = useState(0);
+  const { semesterList=[], userInfo={} } = app;
+  const [selectIndex, setSelectIndex] = useState(-1);
+  const { state: studentInfo={} } = useLocation()
   const [ sourseData, setSourseData ] = useState({
     courseTable: [],
     potionCourseScoreList: [],
@@ -23,6 +25,7 @@ const Transcript = memo(({ app }) => {
     otherScore: 0,
     historyOtherScore: 0,
     honorTag: [],
+    studentData: {}
   })
   const [xnxqList,setXnxqList] = useState([])
   const [isHasRole,setIsHasRole] = useState(Number(localStorage.getItem('personType')) == 1)
@@ -72,10 +75,10 @@ const Transcript = memo(({ app }) => {
     }
   }
 
-  const getTranscriptInfo = async(list,index) => {
-    const termInfo = (list && list.length > 0 ? list[index] : xnxqList[selectIndex])
+  const getTranscriptInfo = async() => {
+    const termInfo = semesterList[selectIndex]
     let data = {
-      studentCode: studentCode || studentLists[childIndex]?.studentCode,
+      studentCode: studentInfo.studentCode,
       term: termInfo.term,
       year: termInfo.year
     }
@@ -110,7 +113,8 @@ const Transcript = memo(({ app }) => {
       totalScore,
       otherScore,
       historyOtherScore,
-      honorTag
+      honorTag,
+      studentData
     })
   }
 
@@ -122,10 +126,12 @@ const Transcript = memo(({ app }) => {
   }
 
   useEffect(() => {
-    if(initComplete){
-      init()
+    console.log(selectIndex, studentInfo.studentCode)
+    if(studentInfo && studentInfo.studentCode){
+      studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
+      selectIndex> -1 && getTranscriptInfo()
     }
-  }, [initComplete,selectIndex,childIndex])
+  }, [studentInfo, selectIndex])
 
   const printElement = useRef();
   const clickSure = async () => {
@@ -143,30 +149,13 @@ const Transcript = memo(({ app }) => {
 
   return (
     <div className={css.container}>
-        <DropDownList {...dropListProps}></DropDownList>
+        <DropDownList {...dropListProps} disable={userInfo.type ===1}></DropDownList>
         <div className={css.transcriptBox} ref={printElement}>
           <div className={css.transTable}>
             <div className={css.transHead}>
               <img src={require('../../styles/images/face.png')} />
-              <div className={css.transStuName}>
-                {
-                  name && <label>{name}</label>
-                }
-                {
-                  !name && studentLists && studentLists.length > 0 && <label  onClick={()=>{setStudentVis(true)}}>
-                    <span className={css.mr10}>{studentLists[childIndex].realName}</span>
-                    <DownOutline className={css.downColor} fontSize={14} color='#fff' fontWeight={700}/>
-                  </label>
-                }
-              </div>
-              <div className={css.transClassName}>
-                {
-                  className && <span>{className}</span>
-                }
-                {
-                  !className && studentLists && studentLists.length > 0 && <span>{studentLists[childIndex].squadName}</span>
-                }
-              </div>
+              <div className={css.transStuName}>{studentInfo.studentName}</div>
+              <div className={css.transClassName}>{studentInfo.className}</div>
             </div>
             <div className={css.transBody}>
               <table cellPadding={0} cellSpacing={0}>
