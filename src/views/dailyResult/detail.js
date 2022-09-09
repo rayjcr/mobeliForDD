@@ -1,10 +1,12 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { studentScore, studentSituation, scoreTrend } from '../../api/index.js';
 import DropDownList from '../../component/dropdownlist';
 import PermissionHoc from '../../component/PermissionHoc';
 import Echart from '../../common/echarts';
 import css from './dailyResult.module.scss'
+import { AutoCenter } from 'antd-mobile';
 
 
 const ComTable = ({column, tableData}) => {
@@ -16,7 +18,7 @@ const ComTable = ({column, tableData}) => {
             {
               column.map((item, index) => {
                 return (
-                  <th key={'tr_'+index}>{item.title}</th>
+                  <th style={ item.width ? { width: item.width, flex: 'auto' } : {} } key={'tr_'+index}>{item.title}</th>
                 )
               })
             }
@@ -30,7 +32,7 @@ const ComTable = ({column, tableData}) => {
                   {
                     column.map((colItem, colIndex) => {
                       return (
-                        <td key={'td_'+colIndex}>{item[colItem.dataIndex]}</td>
+                        <td style={ colItem.width ? { width: colItem.width, flex: 'auto' } : {} } key={'td_'+colIndex}>{item[colItem.dataIndex]}</td>
                       )
                     })
                   }
@@ -45,87 +47,124 @@ const ComTable = ({column, tableData}) => {
 }
 
 const DailyDetail = memo(({ app, dispatch }) => {
+  
+  const { initComplete } = app
 
   const [ subjectScore, setSubjectScore ] = useState({
     column: [
-      { dataIndex: 'subject', title: '科目' },
-      { dataIndex: 'score', title: '成绩' },
-      { dataIndex: 'evaluation', title: '总评' },
+      { dataIndex: 'subjectName', title: '科目' },
+      { dataIndex: 'score', title: '成绩' }
     ],
-    tableData: [
-      { subject: '语文', score: '112', evaluation: '优秀' }
-    ]
+    tableData: []
   })
 
   const [ classScore, setClassScore ] = useState({
     column: [
-      { dataIndex: 'ALevel', title: 'A层级' },
-      { dataIndex: 'BLevel', title: 'B层级' },
-      { dataIndex: 'myLevel', title: '本人所在层级' },
+      { dataIndex: 'ALevel', title: 'A' },
+      { dataIndex: 'BLevel', title: 'B' },
+      { dataIndex: 'CLevel', title: 'C' },
+      { dataIndex: 'DLevel', title: 'D' },
+      { dataIndex: 'myLevel', title: '本人所在层级', width: '25%' },
     ],
     tableData: [
-      { ALevel: '20人', scBLevelore: '12人', myLevel: 'A' }
+      { ALevel: '20人', BLevel: '12人', myLevel: 'A' }
     ]
   })
 
   const [ sourseData, setSourseData ] = useState({
     reportList: [],
-    lineProps: {
-      type: 'line',
-      chartsProp: {
-        id: parseInt(Math.random()*10000),
-        option: {
-          type: 'value',
-          legend: {
-            data:['语文','数学'],
-            right: 0
-          },
-          grid: {
-            top: '15%',
-            left: '4%',
-            right: '4%',
-            bottom: '5%',
-            containLabel: true
-          },
-          axisLabel: {
-            color: '#999',
-          },
-          yAxis: {
-            type: 'value',
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            axisLine:{
-                show: false,
-            },
-            data: ['第一次','第二次','第三次']
-          }
-        },
-        series: [{
-          name: '语文',
-          type: 'line',
-          lineStyle:{
-              color: '#48807A'
-          },
-          itemStyle:{
-            color: '#48807A'
-          },
-          data: [59, 87, 108],
-        },{
-          name: '数学',
-          type: 'line',
-          lineStyle:{
-              color: '#E0CC62'
-          },
-          itemStyle:{
-              color: '#E0CC62'
-          },
-          data: [72, 95, 113],
-        }]
-      }
-    }
+    lineProps: {}
   })
+
+  const getScore = async () => {
+    let res = await studentScore({ examId: '1563815448299896833', studentId: '1545415656622182402' })
+    setSubjectScore({
+      ...subjectScore,
+      tableData: res.data.data
+    })
+  }
+
+  const getStudentSituation = async () => {
+    let res = await studentSituation({ examId: '1563815448299896833', studentId: '1545415656622182402' })
+    let situation = res.data.data
+    let tableData = [{}]
+    Object.keys(situation).forEach(item => {
+      if(item == 'A层级'){
+        tableData[0]['ALevel'] = situation[item]
+      }
+      if(item == 'B层级'){
+        tableData[0]['BLevel'] = situation[item]
+      }
+      if(item == 'C层级'){
+        tableData[0]['CLevel'] = situation[item]
+      }
+      if(item == 'D层级'){
+        tableData[0]['DLevel'] = situation[item]
+      }
+      if(item == '本人所在的层级'){
+        tableData[0]['myLevel'] = situation[item]
+      }
+    })
+    setClassScore({
+      ...classScore,
+      tableData: tableData
+    })
+  }
+  const getScoreTrend = async () => {
+    let res = await scoreTrend({ examId: '1563815448299896833', studentId: '1545415656622182402' })
+
+    let data = res.data.data
+
+    setSourseData({
+      ...sourseData,
+      lineProps: {
+        type: 'line',
+        chartsProp: {
+          id: parseInt(Math.random()*10000),
+          option: {
+            type: 'value',
+            legend: {
+              show: false,
+              data: [],
+              right: 0
+            },
+            grid: {
+              top: '15%',
+              left: '4%',
+              right: '4%',
+              bottom: '5%',
+              containLabel: true
+            },
+            axisLabel: {
+              color: '#999',
+            },
+            yAxis: {
+              type: 'value',
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              axisLine:{
+                  show: false,
+              },
+              data: data.map(e => e.key)
+            }
+          },
+          series: [{
+            name: '语文',
+            type: 'line',
+            lineStyle:{
+                color: '#48807A'
+            },
+            itemStyle:{
+              color: '#48807A'
+            },
+            data: data.map(e => e.value),
+          }]
+        }
+      }
+    })
+  }
 
   // const lineProps = {
   //   type: 'line',
@@ -193,7 +232,13 @@ const DailyDetail = memo(({ app, dispatch }) => {
   // setSourseData({
 
   // })
-
+  useEffect(() => {
+    if(initComplete){
+      getScore()
+      getStudentSituation()
+      getScoreTrend()
+    }
+  }, [initComplete])
 
   return (
     <div className={css.pg_view}>

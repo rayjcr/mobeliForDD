@@ -68,7 +68,7 @@ const Permisson = memo(({ children }) => {
       // 如果是教师，获取教师相关的基础数据
       // typeall：1（既是家长 又是老师
       const person_type = localStorage.getItem('personType')
-      if(!['transcript','report'].includes(getUrlParams('pageType'))) {
+      // if(!['transcript','report'].includes(getUrlParams('pageType'))) {
 
         //  if(res.typeall!=1 || ((common.whiteUrl.indexOf(path) > -1) && res.typeall == 1)){
             if(person_type == 1) {
@@ -78,7 +78,7 @@ const Permisson = memo(({ children }) => {
             }
         //  }
         
-      }
+      // }
     }
     !userInfo && getUserInfo();
 

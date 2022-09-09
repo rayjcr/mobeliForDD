@@ -30,10 +30,8 @@ export const getTokenAndUserInfo = params => async (dispatch, getState) => {
 }
 // 钉钉登录
 export const setDingdLogin = params => async (dispatch, getState) => {
-    console.log(params)
     let { data } = await ddLogin(params);
-    console.log(data)
-    dispatch(setState({userInfo:data}));
+    dispatch(setState({userInfo: data}));
     return data
 }
 /****
@@ -77,6 +75,7 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
             value: item.code,
         }
     })
+   
     let curSemester = find(semesterList, {'isCurYear':1});
    
     // let curSemester = find(semesterList, {'id':2});
@@ -132,6 +131,7 @@ export const getBaseTeacherData = params => async (dispatch, getState) => {
         subjectList,
         masterClassList,
         subjectAll,
+        semesterList,
         initComplete: true,
         
     }));

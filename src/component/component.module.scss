@@ -176,3 +176,19 @@
         font-weight: 600;
     }
 }
+.awardChooseStu{
+    background: #30827A;
+    .className{
+        color: #fff;
+        .classNum,
+        .downColor{
+            color: #fff;
+        }
+    }
+    .xqList{
+        float: right;
+        .name{
+            margin-right: .1rem;
+        }
+    }
+}

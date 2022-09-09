@@ -1,15 +1,16 @@
 import React, { memo, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PermissionHoc from '../../component/PermissionHoc';
 import { getUrlParams } from '../../utils/tools';
 import { DDPageTypeUrl } from '../../utils/constants'
 import TeacherIndex from './teacher';
-
+import CommonStudentList from '../../component/commonStudentList'
 const Transcript = memo(({ app }) => {
 
   const { userInfo } = app;
   const navigate = useNavigate();
+  const location = useLocation();
   const pageType = getUrlParams('pageType');  // 入口 成绩单查询：transcript
   const redirectUrl = DDPageTypeUrl[pageType];
   
@@ -17,9 +18,12 @@ const Transcript = memo(({ app }) => {
   const [isTeacher, setIsTeacher] = useState(false)
 
   useEffect(() => {
+    console.log(navigate, 'navigate');
+    console.log(location, 'location');
+    
     if(['report','transcript'].includes(redirectUrl)) {
       console.log(userInfo?.type)
-      if(userInfo?.type!==1){
+      if(person_type!==1){
         redirectUrl && navigate(`/${redirectUrl}`)
       }else{
         setIsTeacher(true);
@@ -30,7 +34,7 @@ const Transcript = memo(({ app }) => {
   }, [])
 
   return (
-    isTeacher && <TeacherIndex redirectUrl={redirectUrl} />
+    isTeacher && <CommonStudentList redirectUrl={redirectUrl} />
   )
 })
 

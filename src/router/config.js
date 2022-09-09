@@ -17,8 +17,9 @@ import Bzr from '../views/morningCall/bzr';
 import BzrDetail from '../views/morningCall/bzrDetail';
 import Parent from '../views/morningCall/parent';
 import { Navigate } from 'react-router-dom';
-import CommonRole from '../views/commonRole'
-import ReportDetail from '../views/report/detail'
+import CommonRole from '../views/commonRole';
+import CommonStudentList from '../component/commonStudentList';
+import ReportDetail from '../views/report/detail';
 const Menu = [
     {
         path: '/',
@@ -39,6 +40,11 @@ const Menu = [
         path: '/commonRole',
         title: 'commonRole',
         element: <CommonRole />,
+        isMenu: false,
+    },{
+        path: '/commonStudentList',
+        title: 'commonStudentList',
+        element: <CommonStudentList />,
         isMenu: false,
     },{
         path: '/transcript',

@@ -1,7 +1,8 @@
 import React, { memo, useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import css from './pageA.module.scss'
+import css from './pageA.module.scss';
+import { DDPageTypeUrl } from '../../utils/constants'
 import { getBaseTeacherData,getBaseParentData } from '../../store/appSlice';
 const PageA = memo(({app, dispatch}) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const PageA = memo(({app, dispatch}) => {
     // { menuId: 9, menuName: '课堂点名家长', menuPath: 'parent',type:3 },
   ])
 
-  const [teaMenu,setTeaMenu] = useState([
+  const [teaMenu, setTeaMenu] = useState([
     { menuId: 2, menuName: '获奖查询', menuPath: 'stuaward',type:1 },
     { menuId: 3, menuName: '成绩单', menuPath: 'transcript',type:1},
     { menuId: 4, menuName: '成长档案', menuPath: 'report',type:1},
@@ -28,12 +29,30 @@ const PageA = memo(({app, dispatch}) => {
   const toPage = async(item) => {
     if(!item.menuPath) return
     localStorage.setItem('personType',item.type)
-    if(item.type == 1){
+    
+    if(item.type === 1){
       await dispatch(getBaseTeacherData(userInfo));   
-    }else if(item.type == 3){
+    }else if(item.type === 3){
       await dispatch(getBaseParentData(userInfo));
     }
-    navigate(`/commonrole?pageType=${item.menuPath}`)
+
+    const redirectUrl = DDPageTypeUrl[item.menuPath];
+    console.log(redirectUrl)
+    
+    if(['report','transcript'].includes(redirectUrl)) {
+      console.log(userInfo?.type)
+      if(item.type!==1){
+        redirectUrl && navigate(`/${redirectUrl}`)
+      }else{
+        navigate(`/commonStudentList`)
+      }
+    }else{
+      redirectUrl && navigate(`/${redirectUrl}`)
+    }
+
+
+
+    //navigate(`/commonrole?pageType=${item.menuPath}`)
   }
 
   return (

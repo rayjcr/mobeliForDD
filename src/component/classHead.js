@@ -8,7 +8,7 @@ import _, { conformsTo } from 'lodash';
 import moment from 'moment';
 // import dayjs from 'dayjs'
 import { unstable_batchedUpdates as batchedUpdates} from 'react-dom';
-const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList,currentSubjectIndex,currentTime,weekList,currentWeekIndex,type,hasNoArriveStudent,time,childList,currentChildIndex,childIndex,classNameRef},LogModalRef) => {
+const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList,currentSubjectIndex,currentTime,weekList,currentWeekIndex,type,hasNoArriveStudent,time,childList,currentChildIndex,childIndex,classNameRef,xnxqList,currentXqIndex},LogModalRef) => {
   const [classListPicker,setClassListPicker] = useState(false)
   const [dataPicker, setDataPicker] = useState(false);
   const [selectIndex, setSelectIndex] = useState(0);
@@ -24,6 +24,9 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   const timeRef = useRef(null)
   const subjectRef = useRef(null)
   const [childValue,setChildValue] = useState([''])
+
+  const [xqIndex,setXqIndex] = useState(0)
+  const [xqPicker,setXqPicker] = useState(false)
   const onChangeClass = useDebounce((e)=>{
     let changeIndex = _.findIndex(classList, {'value':e[0]})
     if(selectIndex===changeIndex) return
@@ -64,10 +67,8 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
   const onChangeChild = useDebounce((e)=>{
     
     let changeIndex = _.findIndex(childList, {'value':e[0]})
-    
     if(childPickerIndex===changeIndex) return
     else{
-     
       currentChildIndex(changeIndex)
       setChildPickerIndex(changeIndex)
       setChildValue([childList[changeIndex].value])
@@ -90,6 +91,17 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
     }
     
   }
+
+  // 选择学年学期
+  const onXnxqChild = useDebounce((e)=>{
+    let changeIndex = _.findIndex(xnxqList, {'value':e[0]})
+    if(xqIndex===changeIndex) return
+    else{
+      currentXqIndex(changeIndex)
+      setXqIndex(changeIndex)
+    }
+  },600)
+
   useEffect(() => {
     if(childIndex){
       batchedUpdates(()=>{
@@ -105,7 +117,7 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
     changeSubject,
     changeTimeData
   }));
-
+  console.log(classNameRef)
   return (
     <>
      {/* 任课教师 */}
@@ -115,7 +127,7 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
                   <div className={css.className} onClick={()=>setClassListPicker(true)}>
                     <span className={css.name}>{classList[selectIndex].label}</span>
                     <span className={css.classNum}> ( {classList[selectIndex].studentCount||0} ) </span>
-                    <DownOutline fontSize={14} color='#666' fontWeight={700}/>
+                    <DownOutline className={css.downColor} fontSize={14} color='#666' fontWeight={700}/>
                   </div>  
               }
               {/* 班主任时间显示 */}
@@ -138,8 +150,13 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
               }
 
               {weekList &&weekList.length > 0 && <div className={css.timePicker} onClick={()=>setWeekPicker(true)}><CalendarOutline /> {weekList[selectWeekIndex].label}</div>} 
-              
-              
+              {/* 学年学期列表 */}
+              {
+                xnxqList && xnxqList.length > 0 && <div className={[css.className, css.xqList].join(' ')} onClick={()=>setXqPicker(true)}>
+                  <span className={css.name}>{xnxqList[xqIndex].label}</span>
+                  <DownOutline className={css.downColor} fontSize={14} color='#666' fontWeight={700}/>
+                </div>
+              }
         </div>
       
       {/* 家长 */}
@@ -198,6 +215,18 @@ const ClassHead = forwardRef(({ classList,userInfo,currentClassIndex,subjectList
           value={childValue}
           // renderLabel={item=>item.classAliasName}
           onChange={onChangeChild}
+        />
+      </Popup>
+
+      <Popup
+        visible={xqPicker}
+        onMaskClick={() => {
+          setXqPicker(false)
+        }} >
+        <PickerView
+          columns={[xnxqList]}
+          // renderLabel={item=>item.classAliasName}
+          onChange={onXnxqChild}
         />
       </Popup>
 

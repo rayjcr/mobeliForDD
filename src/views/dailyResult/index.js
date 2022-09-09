@@ -7,6 +7,7 @@ import PermissionHoc from '../../component/PermissionHoc';
 import css from './dailyResult.module.scss'
 
 const Daily = memo(({ app, dispatch }) => {
+  const navigate = useNavigate()
 
   const { initComplete, curSemester } = app
 
@@ -16,6 +17,10 @@ const Daily = memo(({ app, dispatch }) => {
     let res = await getExamList({ schoolYearAndTermCode: curSemester.code })
     console.log(res)
     setExamList(res.data.data)
+  }
+
+  const toDetail = (data) => {
+    navigate(`/dailyDetail`, { state: {honorData:data} })
   }
 
   useEffect(() => {
@@ -31,7 +36,7 @@ const Daily = memo(({ app, dispatch }) => {
         {
           examList.map((item, index) => {
             return (
-              <div className={css.exam_item} key={index}>
+              <div className={css.exam_item} key={index} onClick={() => toDetail(item)}>
                 <div className={css.exam_type}>{item.examTypeName}</div>
                 <span>{ item.examName }</span>
               </div>

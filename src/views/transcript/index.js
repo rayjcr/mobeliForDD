@@ -3,15 +3,18 @@ import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import PermissionHoc from '../../component/PermissionHoc';
-
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
+import { useSearchParams } from 'react-router-dom';
 import DropDownList from '../../component/dropdownlist';
 import css from './transcript.module.scss';
 import * as api from '../../api/index';
-
+import { Popup, PickerView } from 'antd-mobile';
+import { useDebounce } from '../../utils/tools';
+import { DownOutline } from 'antd-mobile-icons';
+import _ from 'lodash';
 const Transcript = memo(({ app }) => {
-  const { semesterList=[], userInfo={} } = app;
-  const [selectIndex, setSelectIndex] = useState(-1);
-  const { state: studentInfo={} } = useLocation()
+  const { semesterList=[], userInfo={},studentLists,initComplete } = app;
+  const [selectIndex, setSelectIndex] = useState(0);
   const [ sourseData, setSourseData ] = useState({
     courseTable: [],
     potionCourseScoreList: [],
@@ -21,20 +24,58 @@ const Transcript = memo(({ app }) => {
     historyOtherScore: 0,
     honorTag: [],
   })
-  
+  const [xnxqList,setXnxqList] = useState([])
+  const [isHasRole,setIsHasRole] = useState(Number(localStorage.getItem('personType')) == 1)
+  const [childIndex,setChildIndex] = useState(0)
+  const [searchParams] = useSearchParams()
+  const studentCode = searchParams.get('studentCode')
+  const classCode = searchParams.get('classCode')
+  const className = searchParams.get('className')
+  const name = searchParams.get('name')
+
+  const [studentVis,setStudentVis] = useState(false)
+  // 获取班级学期学期
+  const getYearList = async()=>{
+      let res = await api.getClassYearList({classId: classCode || studentLists[childIndex].squadId})
+      if(res.data.code == 200){
+        if(res.data.data && res.data.data.length > 0){
+          let data = res.data.data.map((item)=>{
+            return{
+              ...item,
+              label: item.name,
+              value: item.code,
+            }
+          })
+          batchedUpdates(async()=>{
+            setXnxqList([...data])
+            setSelectIndex(res.data.data.length - 1)
+          })
+          
+        }
+        
+      }
+  }
+
+  const onChangeStu = useDebounce((e)=>{
+    let changeIndex = _.findIndex(studentLists, {'value':e[0]})
+    if(childIndex===changeIndex) return
+    else{
+      setChildIndex(changeIndex)
+    }
+  },600)
 
   let dropListProps = {
-    dropList: semesterList,
+    dropList: xnxqList,
     selectIndex: selectIndex,
     onChange: (item, index) => {
       setSelectIndex(index);
     }
   }
 
-  const getTranscriptInfo = async() => {
-    const termInfo = semesterList[selectIndex]
+  const getTranscriptInfo = async(list,index) => {
+    const termInfo = (list && list.length > 0 ? list[index] : xnxqList[selectIndex])
     let data = {
-      studentCode: studentInfo.studentCode,
+      studentCode: studentCode || studentLists[childIndex]?.studentCode,
       term: termInfo.term,
       year: termInfo.year
     }
@@ -73,13 +114,18 @@ const Transcript = memo(({ app }) => {
     })
   }
 
+
+  
+  const init = async()=>{
+      await xnxqList.length == 0 && getYearList()
+      xnxqList && xnxqList.length > 0 && getTranscriptInfo()
+  }
+
   useEffect(() => {
-    console.log(selectIndex, studentInfo.studentCode)
-    if(studentInfo && studentInfo.studentCode){
-      studentInfo?.studentCode && setSelectIndex(studentInfo.selectTermIndex)
-      selectIndex> -1 && getTranscriptInfo()
+    if(initComplete){
+      init()
     }
-  }, [studentInfo, selectIndex])
+  }, [initComplete,selectIndex,childIndex])
 
   const printElement = useRef();
   const clickSure = async () => {
@@ -97,13 +143,30 @@ const Transcript = memo(({ app }) => {
 
   return (
     <div className={css.container}>
-        <DropDownList {...dropListProps} disable={userInfo.type ===1}></DropDownList>
+        <DropDownList {...dropListProps}></DropDownList>
         <div className={css.transcriptBox} ref={printElement}>
           <div className={css.transTable}>
             <div className={css.transHead}>
               <img src={require('../../styles/images/face.png')} />
-              <div className={css.transStuName}>{studentInfo.studentName}</div>
-              <div className={css.transClassName}>{studentInfo.className}</div>
+              <div className={css.transStuName}>
+                {
+                  name && <label>{name}</label>
+                }
+                {
+                  !name && studentLists && studentLists.length > 0 && <label  onClick={()=>{setStudentVis(true)}}>
+                    <span className={css.mr10}>{studentLists[childIndex].realName}</span>
+                    <DownOutline className={css.downColor} fontSize={14} color='#fff' fontWeight={700}/>
+                  </label>
+                }
+              </div>
+              <div className={css.transClassName}>
+                {
+                  className && <span>{className}</span>
+                }
+                {
+                  !className && studentLists && studentLists.length > 0 && <span>{studentLists[childIndex].squadName}</span>
+                }
+              </div>
             </div>
             <div className={css.transBody}>
               <table cellPadding={0} cellSpacing={0}>
@@ -177,6 +240,15 @@ const Transcript = memo(({ app }) => {
           </div>
         </div>
         <div className={css.saveTrans} onClick={clickSure}>保存到手机</div>
+        <Popup
+          visible={studentVis}
+          onMaskClick={()=>setStudentVis(false)}
+        >
+          <PickerView
+            columns={[studentLists]}
+            onChange={onChangeStu}
+          />
+        </Popup>
     </div>
   )
 })

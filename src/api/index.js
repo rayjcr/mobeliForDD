@@ -289,3 +289,49 @@ export async function getSubjectList(params) {
         params,
     })
 }
+// 班级学年学期列表
+export async function getClassYearList(params) {
+    return request(`${base}/pc/yearTerm/classYearList`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 获取班级荣誉列表
+export async function showDataForClass(params) {
+    return request(`${base}/honor/showDataForClass`, {
+        method: 'get',
+        params,
+    })
+}
+// 获取学生成绩单列表 TEST 传学年学期取学生详情
+export async function getReportListDetail(data) {
+    return request(`${base}/exam/schoolReport/list`, {
+        method: 'post',
+        data,
+    })
+}
+        
+// 学生某次考试成绩列表
+export async function studentScore(params) {
+    return request(`${base}/exam/studentScore`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 本班成绩分布
+export async function studentSituation(params) {
+    return request(`${base}/exam/studentSituation`, {
+        method: 'get',
+        params,
+    })
+}
+
+// 成绩趋势(只有单科考试时才会有此图表)
+export async function scoreTrend(params) {
+    return request(`${base}/exam/scoreTrend`, {
+        method: 'get',
+        params,
+    })
+}
